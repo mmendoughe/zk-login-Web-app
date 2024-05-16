@@ -1,10 +1,37 @@
 import React from "react";
 
 function LoginForm() {
+  // Function to handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    const formData = {
+      id: event.target.id.value,
+      proof: event.target.proof.value,
+      contract: event.target.contract.value,
+    };
+
+    try {
+      // Use fetch to POST data to '/run-script' endpoint
+      const response = await fetch('/run-script', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json(); // Assuming server responds with JSON
+      console.log('Script execution successful:', data);
+    } catch (error) {
+      console.error('Error executing script:', error);
+    }
+  };
+  
   return (
     <div className="login-form">
       <h2>Login</h2>
-      <form action="/login" method="post">
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="id">Enter your Username:</label>
           <input
@@ -35,9 +62,9 @@ function LoginForm() {
             required
           />
         </div>
-        <a href="/login" className="submit-btn">
-          &gt;
-        </a>
+        <button type="submit" className="submit-btn">
+          Submit
+        </button>
       </form>
     </div>
   );
