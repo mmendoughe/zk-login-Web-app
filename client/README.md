@@ -2,6 +2,17 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Setup
+
+## Start Server
+`cd ..`
+`cd server`
+`npm start`
+
+## Setup Zokrates
+call
+`zokrates compile -i proof_generation/pw_proof_comp.zok`
+
 ## Available Scripts
 
 In the project directory, you can run:

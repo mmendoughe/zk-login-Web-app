@@ -1,6 +1,8 @@
 import "hashes/sha256/512bitPacked" as sha256packed;
 
-def main(private field password) -> field[2] {
-    field[2] h = sha256packed(a);
-    return h;
+def main(private field a, private field b, private field c, private field d) {
+    field[2] h = sha256packed([a, b, c, d]);
+    assert(h[0] == 315388562301356318214402203810079011634);
+    assert(h[1] == 179851545110265088179486562169593292747);
+    return;
 }

@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import LoginForm from "./UI/login";
+import Process from "./UI/process";
 
 function App() {
   return (
     <div className="App">
-      <LoginForm />
+      <Process />
     </div>
   );
 }
