@@ -34,7 +34,6 @@ export async function initWeb3() {
  */
 export async function onboardMM(networkIDs) {
   console.log("Onboarding...");
-  window.ethereum.enable();
   let web3Provider;
 
   try {

@@ -7,12 +7,17 @@ function Process() {
   const [step, setStep] = useState(0);
   const [proof, setProof] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [nonce, setNonce] = useState(null);
+  const [name, setName] = useState(null);
 
   useEffect(() => {
+    console.log("Provider:", provider);
+    console.log("Name:", name);
     if (provider && proof) {
       nextStepPage();
     }
-  }, [provider, proof]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, proof, nonce, name]);
 
   const nextStepPage = () => {
     if (step >= Components.length - 1) {
@@ -27,18 +32,40 @@ function Process() {
       case 0:
         return (
           <ProofGenerationForm
-            submit={(proof, provider) => {
+            submit={(proof, provider, nonce, name) => {
               setProof(proof);
               setProvider(provider);
+              setNonce(nonce);
+              setName(name);
             }}
           />
         );
       case 1:
-        return <Submit proof={proof} provider={provider} />;
+        return (
+          <Submit proof={proof} provider={provider} nonce={nonce} name={name} />
+        );
       case 2:
-        return <ProofGenerationForm />;
+        return (
+          <ProofGenerationForm
+            submit={(proof, provider, nonce) => {
+              setProof(proof);
+              setProvider(provider);
+              setNonce(nonce);
+              nextStepPage();
+            }}
+          />
+        );
       default:
-        return <ProofGenerationForm />;
+        return (
+          <ProofGenerationForm
+            submit={(proof, provider, nonce) => {
+              setProof(proof);
+              setProvider(provider);
+              setNonce(nonce);
+              nextStepPage();
+            }}
+          />
+        );
     }
   };
   return <>{getStep()}</>;

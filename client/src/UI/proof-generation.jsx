@@ -1,7 +1,8 @@
 import React, {useState} from "react";
-import { stringToBitArray, splitTo128BitArrays, convertToFieldArray } from "./helper/handle-password";
+import { stringToBitArray, splitTo128BitArrays, convertToFieldArray, hashByteArray } from "./helper/handle-password";
 import { onboardMM } from "../client/web3";
 import { Web3Provider } from "../client/provider";
+import { makeProof } from "../client/zokrates";
 
 function ProofGenerationForm(props) {
   const [provider, setProvider] = useState(null);
@@ -12,7 +13,7 @@ function ProofGenerationForm(props) {
     let account;
     let prov;
     try {
-      const onboard = await onboardMM([1]);
+      const onboard = await onboardMM([31337]);
       account = onboard.account;
       prov = onboard.provider;
       console.log('Account:', account);
@@ -26,11 +27,20 @@ function ProofGenerationForm(props) {
     // handle inputs
     const password = stringToBitArray(event.target.proof.value);
     const passwordParts = splitTo128BitArrays(password);
+    console.log("passwordParts:  ", passwordParts)
     const fieldChunks = passwordParts.map(chunk => convertToFieldArray(chunk));
+    if (fieldChunks.length > 4) {
+      console.error('Password too long');
+      return;
+    }
+    while (fieldChunks.length < 4) {
+      const zeroBytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      fieldChunks.push(zeroBytes);
+    }
 
     const formData = {
       id: event.target.id.value,
-      contract: event.target.contract.value,
+      nonce: event.target.nonce.value,
     };
 
     // Add only necessary proof parts to formData
@@ -38,8 +48,11 @@ function ProofGenerationForm(props) {
       formData[`proof${i + 1}`] = fieldChunks[i];
     }
 
+    const hashes = hashByteArray(...fieldChunks);
+    console.log('Hashes:', hashes);
+
     try {
-      console.log('Sending data:', formData);
+      /*console.log('Sending data:', formData);
       // Use fetch to POST data to '/run-script' endpoint
       const response = await fetch('/run-script', {
         method: 'POST',
@@ -53,10 +66,13 @@ function ProofGenerationForm(props) {
         const proofJson = await response.json();
         console.log('Proof JSON:', proofJson);
 
-        props.submit(proofJson, provider);
+        props.submit(proofJson, provider, formData.nonce);
       } else {
         console.error('Error:', await response.text());
-      }
+      }*/
+      // const proof = await makeProof(fieldChunks);
+      // props.submit(proof.proof, provider, formData.nonce, formData.id);
+      console.log('fieldChunks:', fieldChunks);
     } catch (error) {
       console.error('Error executing script:', error);
     }
@@ -93,11 +109,11 @@ function ProofGenerationForm(props) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="contract">Enter the contract ID:</label>
+          <label htmlFor="nonce">Enter the given nonce:</label>
           <input
             type="text"
-            id="contract"
-            name="contract"
+            id="nonce"
+            name="nonce"
             placeholder="0x..."
             required
           />

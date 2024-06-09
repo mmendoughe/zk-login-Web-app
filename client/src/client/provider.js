@@ -1,4 +1,3 @@
-import { getBytes } from "ethers";
 
 class Web3Provider {
   provider;
@@ -13,14 +12,8 @@ class Web3Provider {
     return this.provider.getNetwork().then((net) => net.chainId);
   }
 
-  signMessage(msg) {
-    const signer = this.provider.getSigner();
-    return signer.signMessage(getBytes(msg));
-  }
-
   sendTransaction(tx) {
-    const signer = this.provider.getSigner();
-    return signer.sendTransaction(tx);
+    return this.provider.broadcastTransaction(tx);
   }
 
   onBlock(listener) {
@@ -33,6 +26,12 @@ class Web3Provider {
 
   getAddress() {
     return this.address;
+  }
+
+  async getSigner() {
+    console.log("Getting signer");
+    console.log(this.provider);
+    return await this.provider.getSigner();
   }
 }
 
