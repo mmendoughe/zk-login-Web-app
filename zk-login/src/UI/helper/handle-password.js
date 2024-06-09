@@ -1,6 +1,6 @@
 var sha256 = require("js-sha256");
 
-const crypto = require('crypto-browserify');
+const CryptoJS = require('crypto-js');
 
 function stringToBitArray(str) {
   const encoder = new TextEncoder();
@@ -32,13 +32,17 @@ function splitTo128BitArrays(bitArray) {
 function convertToFieldArray(byteArray) {
   let fieldArray = [];
   for (let i = 0; i < 16; i++) {
-    if (i >= byteArray.length) {
-      fieldArray.push(0);
-    } else {
-      fieldArray.push(byteArray[i]);
-    }
+    fieldArray.push(byteArray[i]);
   }
   return fieldArray;
+}
+
+function convertToFieldString(byteArray) {
+  let fieldString = "";
+  for (let i = 0; i < byteArray.length; i++) {
+    fieldString += byteArray[i].toString();
+  }
+  return fieldString;
 }
 
 // Function to convert a byte array to a hex string
@@ -47,26 +51,32 @@ function byteArrayToHexString(byteArray) {
 }
 
 // Function to hash four 16-byte arrays and return two 16-byte arrays
-function hashByteArray(array1, array2, array3, array4, toHex = false) {
-    // Ensure the input arrays are 16 bytes each
-    if (array1.length !== 16 || array2.length !== 16 || array3.length !== 16 || array4.length !== 16) {
-        throw new Error('All input arrays must be 16 bytes long');
-    }
+function hashByteArray(args, toHex = false) {
 
-    // Concatenate the arrays into a single 64-byte array
-    let concatenatedArray = Buffer.concat([
-        Buffer.from(array1),
-        Buffer.from(array2),
-        Buffer.from(array3),
-        Buffer.from(array4)
-    ]);
+
+    // Convert concatenated array to WordArray
+    let wordArray = CryptoJS.lib.WordArray.create(args);
 
     // Hash the concatenated array using SHA-256
-    let hash = crypto.createHash('sha256').update(concatenatedArray).digest();
+    let hash = CryptoJS.SHA256(wordArray);
+    console.log("Hash:", hash.toString());
+
+    // Convert the hash to a byte array
+    let hashArray = CryptoJS.enc.Hex.parse(hash.toString()).words;
+    console.log("Hash array:", hashArray);
+    // Convert hashArray to a byte array
+    let byteArray = [];
+    for (let i = 0; i < hashArray.length; i++) {
+        let word = hashArray[i];
+        byteArray.push((word >> 24) & 0xff);
+        byteArray.push((word >> 16) & 0xff);
+        byteArray.push((word >> 8) & 0xff);
+        byteArray.push(word & 0xff);
+    }
 
     // Split the hash into two 16-byte arrays
-    let hashArray1 = Array.from(hash.slice(0, 16));
-    let hashArray2 = Array.from(hash.slice(16, 32));
+    let hashArray1 = byteArray.slice(0, 16);
+    let hashArray2 = byteArray.slice(16, 32);
 
     // Return the results as hex strings if requested
     if (toHex) {
@@ -76,4 +86,4 @@ function hashByteArray(array1, array2, array3, array4, toHex = false) {
     }
 }
 
-export { stringToBitArray, splitTo128BitArrays, convertToFieldArray, hash, hashByteArray };
+export { stringToBitArray, splitTo128BitArrays, convertToFieldArray, hash, hashByteArray, convertToFieldString };

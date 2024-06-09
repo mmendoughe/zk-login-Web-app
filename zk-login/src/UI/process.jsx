@@ -9,15 +9,16 @@ function Process() {
   const [provider, setProvider] = useState(null);
   const [nonce, setNonce] = useState(null);
   const [name, setName] = useState(null);
+  const [hashes, setHashes] = useState(null);
 
   useEffect(() => {
     console.log("Provider:", provider);
     console.log("Name:", name);
-    if (provider && proof) {
+    if (provider && proof && hashes) {
       nextStepPage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, proof, nonce, name]);
+  }, [provider, proof, nonce, name, hashes]);
 
   const nextStepPage = () => {
     if (step >= Components.length - 1) {
@@ -32,8 +33,9 @@ function Process() {
       case 0:
         return (
           <ProofGenerationForm
-            submit={(proof, provider, nonce, name) => {
+            submit={(proof, hashes, provider, nonce, name) => {
               setProof(proof);
+              setHashes(hashes);
               setProvider(provider);
               setNonce(nonce);
               setName(name);
@@ -42,7 +44,7 @@ function Process() {
         );
       case 1:
         return (
-          <Submit proof={proof} provider={provider} nonce={nonce} name={name} />
+          <Submit proof={proof} hashes={hashes} provider={provider} nonce={nonce} name={name} />
         );
       case 2:
         return (

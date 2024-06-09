@@ -38,8 +38,8 @@ function Submit(props) {
         Y: String(proof.c[1]),
       };
       try {
-        console.log("Args: ", { a, b, c }, props.nonce, props.name);
-        const args = [{ a, b, c }, props.nonce, props.name];
+        console.log("Args: ", { a, b, c }, props.hashes, props.nonce, props.name);
+        const args = [{ a, b, c }, props.hashes, props.nonce, props.name];
         const tx = await verifier.verifyTx(...args, {
           from: address,
           gasLimit: 1000000,
