@@ -1,5 +1,7 @@
 import { VerifierMetaData } from "../lib/abi";
 import { ethers } from "ethers";
+import { BN } from "bn.js";
+
 function Submit(props) {
   const prov = props.provider;
   const address = prov.getAddress();
@@ -11,7 +13,7 @@ function Submit(props) {
     console.log("getting signer");
     const signer = await prov.getSigner();
     // Send proof and nonce to verifier
-    const cAddr = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+    const cAddr = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
     console.log("Submit proof to:", cAddr);
     const cABI = JSON.parse(VerifierMetaData.ABI);
     const verifier = new ethers.Contract(cAddr, cABI, signer);
@@ -39,10 +41,11 @@ function Submit(props) {
       };
       try {
         console.log("Args: ", { a, b, c }, props.hashes, props.nonce, props.name);
-        const args = [{ a, b, c }, props.hashes, props.nonce, props.name];
+        const args = [{ a, b, c }, [props.hashes[0], props.hashes[1], props.nonce, 0]];
         const tx = await verifier.verifyTx(...args, {
           from: address,
           gasLimit: 1000000,
+          blockTag: 1,
         });
         console.log("Tx:", tx);
       } catch (error) {
@@ -65,5 +68,6 @@ function Submit(props) {
     </>
   );
 }
+
 
 export default Submit;

@@ -54,26 +54,45 @@ function ProofGenerationForm(props) {
       const zeroBytes = "0";
       passwordArgs.push(zeroBytes);
     }
-    const formData = {
-      id: event.target.id.value,
-      nonce: event.target.nonce.value,
-    };
-
-    // Add only necessary proof parts to formData
-    for (let i = 0; i < fieldChunks.length; i++) {
-      formData[`proof${i + 1}`] = fieldChunks[i];
-    }
-    setFormData(formData);
 
     // const hashes = hashByteArray(fieldChunks);
     // console.log('Hashes:', hashes);
 
     try {
-      const { proof, outputHash } = await makeProof(passwordArgs);
-      console.log("Proof:", proof);
-      console.log("Hashes:", outputHash);
-      setProof(proof);
-      setHashes(outputHash);
+      const { args } = await makeProof(passwordArgs);
+      if (args.length !== 6) {
+        console.error("Invalid proof arguments");
+        return;
+      }
+
+      setHashes(args.slice(4, 6));
+      const formData = {
+        id: event.target.id.value,
+        nonce: event.target.nonce.value,
+        pass1: args[0],
+        pass2: args[1],
+        pass3: args[2],
+        pass4: args[3],
+        hash1: args[4],
+        hash2: args[5]
+      };
+      setFormData(formData);
+
+      const response = await fetch('/run-script', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const proofJson = await response.json();
+        console.log('Proof JSON:', proofJson);
+        setProof(proofJson);
+      } else {
+        console.error('Error:', await response.text());
+      }
     } catch (error) {
       console.error("Error executing script:", error);
     }

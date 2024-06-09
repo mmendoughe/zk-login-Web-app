@@ -34,40 +34,8 @@ async function makeProof(password) {
     args.push(outputHash[0]);
     args.push(outputHash[1]);
   }
-  console.log("Args with hashes:", args);
 
-  const source = `
-    import "hashes/sha256/512bitPacked" as sha256packed;
-    def main(private field a, private field b, private field c, private field d, public field hash1, public field hash2) {
-      field[2] h = sha256packed([a, b, c, d]);
-      log("h is {}", h);
-      assert(h[0] == hash1);
-      assert(h[1] == hash2);
-      return;
-    }`;
-
-  const artifacts = zokratesProvider.compile(source, { debug: true });
-  console.log("Compiled");
-
-  const { witness, output } = zokratesProvider.computeWitness(
-    artifacts,
-    args
-  );
-  console.log("Output:", output);
-  console.log("Witness:", witness);
-
-  const keypair = zokratesProvider.setup(artifacts.program);
-
-  const proof = zokratesProvider.generateProof(
-    artifacts.program,
-    witness,
-    keypair.pk
-  );
-
-  console.log("Proof:", proof);
-  console.log("Output Hash:", outputHash);
-
-  return { proof, outputHash };
+  return { args };
 }
 
 export { makeProof };
