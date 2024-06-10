@@ -17,7 +17,7 @@ app.post('/run-script', (req, res) => {
   const { id, nonce, pass1, pass2, pass3, pass4, hash1, hash2 } = req.body;
   console.log(id, nonce);
   exec(
-    `./proof_generation/proof_generation.sh "${pass1}" "${pass2}" "${pass3}" "${pass4}" "${hash1}" "${hash2}" "${stringToUint(id)}" "${stringToUint(nonce)}"`,
+    `./proof_generation/proof_generation.sh "${pass1}" "${pass2}" "${pass3}" "${pass4}" "${hash1}" "${hash2}" "${id}" "${nonce}"`,
     async (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
@@ -43,12 +43,3 @@ app.post('/run-script', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-function stringToUint(str) {
-  let result = "0x"; // Hexadecimal representation
-  for (let i = 0; i < str.length; i++) {
-    let hex = str.charCodeAt(i).toString(16); // Convert each char to hex
-    result += ("00" + hex).slice(-2); // Pad with leading zeros if necessary
-  }
-  return BigInt(result); // Convert to BigInt for uint representation
-}

@@ -8,6 +8,7 @@ function Process() {
   const [proof, setProof] = useState(null);
   const [provider, setProvider] = useState(null);
   const [nonce, setNonce] = useState(null);
+  const [nameNum, setNameNum] = useState(null);
   const [name, setName] = useState(null);
   const [hashes, setHashes] = useState(null);
 
@@ -33,18 +34,19 @@ function Process() {
       case 0:
         return (
           <ProofGenerationForm
-            submit={(proof, hashes, provider, nonce, name) => {
+            submit={(proof, hashes, provider, nonce, nameNum, name) => {
               setProof(proof);
               setHashes(hashes);
               setProvider(provider);
               setNonce(nonce);
+              setNameNum(nameNum)
               setName(name);
             }}
           />
         );
       case 1:
         return (
-          <Submit proof={proof} hashes={hashes} provider={provider} nonce={nonce} name={name} />
+          <Submit proof={proof} hashes={hashes} provider={provider} nonce={nonce} nameNum={nameNum} name={name}/>
         );
       case 2:
         return (

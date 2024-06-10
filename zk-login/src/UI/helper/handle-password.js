@@ -9,6 +9,18 @@ function stringToBitArray(str) {
   return bitArray;
 }
 
+function stringToNumber(str) {
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(str);
+  const bitArray = Array.from(encoded);
+
+  let result = 0;
+  for (let i = 0; i < bitArray.length; i++) {
+    result = (result << 8) | bitArray[i];
+  }
+  return result;
+}
+
 function hash(str) {
   const hash = sha256.create();
   hash.update(str);
@@ -86,4 +98,4 @@ function hashByteArray(args, toHex = false) {
     }
 }
 
-export { stringToBitArray, splitTo128BitArrays, convertToFieldArray, hash, hashByteArray, convertToFieldString };
+export { stringToBitArray, splitTo128BitArrays, convertToFieldArray, hash, hashByteArray, convertToFieldString, stringToNumber };

@@ -3,6 +3,7 @@ import {
   stringToBitArray,
   splitTo128BitArrays,
   convertToFieldString,
+  stringToNumber,
 } from "./helper/handle-password";
 import { onboardMM } from "../client/web3";
 import { Web3Provider } from "../client/provider";
@@ -13,13 +14,14 @@ function ProofGenerationForm(props) {
   const [hashes, setHashes] = useState(null);
   const [formData, setFormData] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     if (provider && proof && hashes && formData) {
       console.log("Submitting Data");
-      props.submit(proof.proof, hashes, provider, formData.nonce, formData.id);
+      props.submit(proof.proof, hashes, provider, formData.nonce, formData.id, username);
     }
-  }, [provider, proof, hashes, formData, props]);
+  }, [provider, proof, hashes, formData, props, username]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -64,11 +66,12 @@ function ProofGenerationForm(props) {
         console.error("Invalid proof arguments");
         return;
       }
+      setUsername(event.target.id.value);
 
       setHashes(args.slice(4, 6));
       const formData = {
-        id: event.target.id.value,
-        nonce: event.target.nonce.value,
+        id: stringToNumber(event.target.id.value),
+        nonce: stringToNumber(event.target.nonce.value),
         pass1: args[0],
         pass2: args[1],
         pass3: args[2],

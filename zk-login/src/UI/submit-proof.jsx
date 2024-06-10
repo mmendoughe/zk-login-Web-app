@@ -1,6 +1,5 @@
 import { VerifierMetaData } from "../lib/abi";
 import { ethers } from "ethers";
-import { BN } from "bn.js";
 
 function Submit(props) {
   const prov = props.provider;
@@ -13,10 +12,35 @@ function Submit(props) {
     console.log("getting signer");
     const signer = await prov.getSigner();
     // Send proof and nonce to verifier
-    const cAddr = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-    console.log("Submit proof to:", cAddr);
+    const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
     const cABI = JSON.parse(VerifierMetaData.ABI);
     const verifier = new ethers.Contract(cAddr, cABI, signer);
+    console.log("Adding User");
+    try {
+      const userArgs = [props.name, props.hashes[0], props.hashes[0]];
+      const tx = await verifier.addUser(...userArgs, {
+        from: address,
+        gasLimit: 1000000,
+      });
+      console.log("Tx:", tx);
+      const receipt = await tx.wait();
+      console.log("Transaction confirmed in block:", receipt.blockNumber);
+
+      if (receipt.status === 0) {
+        return new Error("Transaction failed.");
+      }
+
+      const updatedReceipt = await prov.getTransactionReceipt(tx.hash);
+      if (updatedReceipt.status === 0) {
+        return new Error("Transaction failed.");
+      }
+      console.log(updatedReceipt);
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+
+    console.log("Submit proof to:", cAddr);
+
     if (verifier != null) {
       console.log("Verifying tx");
       const proof = props.proof;
@@ -41,11 +65,10 @@ function Submit(props) {
       };
       try {
         console.log("Args: ", { a, b, c }, props.hashes, props.nonce, props.name);
-        const args = [{ a, b, c }, [props.hashes[0], props.hashes[1], props.nonce, 0]];
-        const tx = await verifier.verifyTx(...args, {
+        const args = [props.name, props.nameNum, props.nonce, { a, b, c }];
+        const tx = await verifier.verifyProof(...args, {
           from: address,
           gasLimit: 1000000,
-          blockTag: 1,
         });
         console.log("Tx:", tx);
       } catch (error) {

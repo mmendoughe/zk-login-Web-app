@@ -33,6 +33,10 @@ class Web3Provider {
     console.log(this.provider);
     return await this.provider.getSigner();
   }
+
+  getTransactionReceipt(hash) {
+    return this.provider.getTransactionReceipt(hash);
+  }
 }
 
 export { Web3Provider };
