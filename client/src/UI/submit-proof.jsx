@@ -12,7 +12,7 @@ function Submit(props) {
       console.log("Result2:", result);
       props.submit(result);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result]);
 
   /*useEffect(() => {
@@ -96,19 +96,18 @@ function Submit(props) {
         Y: String(proof.c[1]),
       };
       try {
-        console.log(
-          "Args: ",
-          { a, b, c },
-          props.hashes,
-          props.nonce,
-          props.name
-        );
+        console.log("Args: ", props.name, props.nameNum, props.nonce, {
+          a,
+          b,
+          c,
+        });
+        // eslint-disable-next-line no-unused-vars
         const args = [props.name, props.nameNum, props.nonce, { a, b, c }];
-        const tx = await verifier.verifyProof(...args, {
+        /*const tx = await verifier.verifyProof(...args, {
           from: address,
           gasLimit: 1000000,
         });
-        setResult(await tx);
+        setResult(await tx);*/
       } catch (error) {
         console.error("Error verifying tx:", error);
       }
@@ -120,7 +119,11 @@ function Submit(props) {
         <h2>You have successfully generated the proof</h2>
         <p>Please click send, to verify the proof on the blockchain.</p>
         <div className="form-group">
-          <textarea className="proof" readOnly={true} value={JSON.stringify(props.proof)}></textarea>
+          <textarea
+            className="proof"
+            readOnly={true}
+            value={JSON.stringify(props.proof)}
+          ></textarea>
           <button className="custom-button" onClick={handleSubmit}>
             Send
           </button>
