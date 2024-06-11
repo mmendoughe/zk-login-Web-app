@@ -37,6 +37,17 @@ function Submit(props) {
     setupEventListener();
   }, [prov]);*/
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify(props.proof)).then(
+      () => {
+        console.log("Content copied to clipboard");
+      },
+      () => {
+        console.log("Failed to copy");
+      }
+    );
+  };
+
   const handleSubmit = async () => {
     if (prov == null) {
       console.error("Provider not set");
@@ -117,15 +128,15 @@ function Submit(props) {
     <>
       <div className="login-form">
         <h2>You have successfully generated the proof</h2>
-        <p>Please click send, to verify the proof on the blockchain.</p>
+        <p>Please copy the proof and paste it into the login page</p>
         <div className="form-group">
           <textarea
             className="proof"
             readOnly={true}
             value={JSON.stringify(props.proof)}
           ></textarea>
-          <button className="custom-button" onClick={handleSubmit}>
-            Send
+          <button className="custom-button" onClick={copyToClipboard}>
+            Copy
           </button>
         </div>
       </div>
