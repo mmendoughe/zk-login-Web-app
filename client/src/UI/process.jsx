@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ProofGenerationForm from "./proof-generation";
 import Submit from "./submit-proof";
+import Success from "./success";
+import Failure from "./failure";
 
-const Components = ["PROOF-GENERATION", "PUBLISH-PROOF", "SUCCESS"];
+const Components = ["PROOF-GENERATION", "PUBLISH-PROOF", "SUCCESS", "FAILURE"];
 function Process() {
   const [step, setStep] = useState(0);
   const [proof, setProof] = useState(null);
@@ -16,16 +18,18 @@ function Process() {
     console.log("Provider:", provider);
     console.log("Name:", name);
     if (provider && proof && hashes) {
-      nextStepPage();
+      nextStepPage(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, proof, nonce, name, hashes]);
 
-  const nextStepPage = () => {
+  const nextStepPage = (bool) => {
     if (step >= Components.length - 1) {
       setStep(0);
     } else {
-      setStep(step + 1);
+      if (bool) {
+        setStep(step + 2);
+      } else setStep(step + 1);
     }
   };
 
@@ -39,26 +43,34 @@ function Process() {
               setHashes(hashes);
               setProvider(provider);
               setNonce(nonce);
-              setNameNum(nameNum)
+              setNameNum(nameNum);
               setName(name);
             }}
           />
         );
       case 1:
         return (
-          <Submit proof={proof} hashes={hashes} provider={provider} nonce={nonce} nameNum={nameNum} name={name}/>
-        );
-      case 2:
-        return (
-          <ProofGenerationForm
-            submit={(proof, provider, nonce) => {
-              setProof(proof);
-              setProvider(provider);
-              setNonce(nonce);
-              nextStepPage();
+          <Submit
+            proof={proof}
+            hashes={hashes}
+            provider={provider}
+            nonce={nonce}
+            nameNum={nameNum}
+            name={name}
+            submit={(tx) => {
+              if (tx === true) {
+                nextStepPage(false);
+              }
+              if (tx === false) {
+                nextStepPage(true);
+              }
             }}
           />
         );
+      case 2:
+        return <Success />;
+      case 3:
+        return <Failure submit={() => nextStepPage(false)} />;
       default:
         return (
           <ProofGenerationForm
@@ -66,7 +78,7 @@ function Process() {
               setProof(proof);
               setProvider(provider);
               setNonce(nonce);
-              nextStepPage();
+              nextStepPage(false);
             }}
           />
         );

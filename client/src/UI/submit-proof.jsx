@@ -1,9 +1,41 @@
+import React, { useState, useEffect } from "react";
 import { VerifierMetaData } from "../lib/abi";
 import { ethers } from "ethers";
 
 function Submit(props) {
+  const [result, setResult] = useState(null);
   const prov = props.provider;
   const address = prov.getAddress();
+
+  useEffect(() => {
+    if (result != null) {
+      console.log("Result2:", result);
+      props.submit(result);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
+
+  /*useEffect(() => {
+    const setupEventListener = async () => {
+      if (prov != null) {
+        const signer = await prov.getSigner();
+        const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+        const cABI = JSON.parse(VerifierMetaData.ABI);
+        const verifier = new ethers.Contract(cAddr, cABI, signer);
+
+        verifier.on("UserAdded", (username, hash1, hash2) => {
+          console.log(`UserAdded event: Username: ${username}, Hash1: ${hash1.toString()}, Hash2: ${hash2.toString()}`);
+          // Handle the event, e.g., update state or notify the user
+        });
+
+        return () => {
+          verifier.removeAllListeners("UserAdded");
+        };
+      }
+    };
+
+    setupEventListener();
+  }, [prov]);*/
 
   const handleSubmit = async () => {
     if (prov == null) {
@@ -17,12 +49,12 @@ function Submit(props) {
     const verifier = new ethers.Contract(cAddr, cABI, signer);
     console.log("Adding User");
     try {
-      const userArgs = [props.name, props.hashes[0], props.hashes[0]];
+      const userArgs = [props.name, props.hashes[0], props.hashes[1]];
       const tx = await verifier.addUser(...userArgs, {
         from: address,
         gasLimit: 1000000,
       });
-      console.log("Tx:", tx);
+      console.log("AddUser Tx:", tx);
       const receipt = await tx.wait();
       console.log("Transaction confirmed in block:", receipt.blockNumber);
 
@@ -64,13 +96,19 @@ function Submit(props) {
         Y: String(proof.c[1]),
       };
       try {
-        console.log("Args: ", { a, b, c }, props.hashes, props.nonce, props.name);
+        console.log(
+          "Args: ",
+          { a, b, c },
+          props.hashes,
+          props.nonce,
+          props.name
+        );
         const args = [props.name, props.nameNum, props.nonce, { a, b, c }];
         const tx = await verifier.verifyProof(...args, {
           from: address,
           gasLimit: 1000000,
         });
-        console.log("Tx:", tx);
+        setResult(await tx);
       } catch (error) {
         console.error("Error verifying tx:", error);
       }
@@ -79,18 +117,17 @@ function Submit(props) {
   return (
     <>
       <div className="login-form">
-        <h2>Your Address: {address}</h2>
+        <h2>You have successfully generated the proof</h2>
+        <p>Please click send, to verify the proof on the blockchain.</p>
         <div className="form-group">
-          <textarea className="proof">{JSON.stringify(props.proof)}</textarea>
-          <></>
-          <button className="submit-btn" onClick={handleSubmit}>
-            Submit
+          <textarea className="proof" readOnly={true} value={JSON.stringify(props.proof)}></textarea>
+          <button className="custom-button" onClick={handleSubmit}>
+            Send
           </button>
         </div>
       </div>
     </>
   );
 }
-
 
 export default Submit;

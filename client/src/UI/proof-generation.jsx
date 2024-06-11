@@ -15,16 +15,19 @@ function ProofGenerationForm(props) {
   const [formData, setFormData] = useState(null);
   const [provider, setProvider] = useState(null);
   const [username, setUsername] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   useEffect(() => {
     if (provider && proof && hashes && formData) {
       console.log("Submitting Data");
       props.submit(proof.proof, hashes, provider, formData.nonce, formData.id, username);
+      setLoading(false); // Reset loading state after submit
     }
   }, [provider, proof, hashes, formData, props, username]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); // Set loading state to true when form is submitted
     // connect to MetaMask
     let account;
     let prov;
@@ -35,6 +38,7 @@ function ProofGenerationForm(props) {
       console.log("Account:", account);
     } catch (error) {
       console.error("Error onboarding MetaMask:", error);
+      setLoading(false); // Reset loading state if there's an error
       return;
     }
     setProvider(new Web3Provider(prov, account));
@@ -49,6 +53,7 @@ function ProofGenerationForm(props) {
     console.log("fieldChunks:  ", fieldChunks);
     if (fieldChunks.length > 4) {
       console.error("Password too long");
+      setLoading(false); // Reset loading state if there's an error
       return;
     }
     const passwordArgs = fieldChunks;
@@ -57,13 +62,11 @@ function ProofGenerationForm(props) {
       passwordArgs.push(zeroBytes);
     }
 
-    // const hashes = hashByteArray(fieldChunks);
-    // console.log('Hashes:', hashes);
-
     try {
       const { args } = await makeProof(passwordArgs);
       if (args.length !== 6) {
         console.error("Invalid proof arguments");
+        setLoading(false); // Reset loading state if there's an error
         return;
       }
       setUsername(event.target.id.value);
@@ -95,9 +98,11 @@ function ProofGenerationForm(props) {
         setProof(proofJson);
       } else {
         console.error('Error:', await response.text());
+        setLoading(false); // Reset loading state if there's an error
       }
     } catch (error) {
       console.error("Error executing script:", error);
+      setLoading(false); // Reset loading state if there's an error
     }
   };
 
@@ -121,6 +126,7 @@ function ProofGenerationForm(props) {
             name="id"
             placeholder="Username"
             required
+            disabled={loading} // Disable input while loading
           />
         </div>
         <div className="form-group">
@@ -131,6 +137,7 @@ function ProofGenerationForm(props) {
             name="proof"
             placeholder="Password"
             required
+            disabled={loading} // Disable input while loading
           />
         </div>
         <div className="form-group">
@@ -141,11 +148,16 @@ function ProofGenerationForm(props) {
             name="nonce"
             placeholder="0x..."
             required
+            disabled={loading} // Disable input while loading
           />
         </div>
-        <a href="/login" className="submit-btn" onClick={handleLinkClick}>
+        {loading ? (
+          <div className="loading-circle"></div>
+        ) : (
+          <a href="/login" className="submit-btn" onClick={handleLinkClick}>
           &gt;
         </a>
+        )}
       </form>
     </div>
   );
