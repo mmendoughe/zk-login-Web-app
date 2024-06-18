@@ -14,7 +14,7 @@ function App() {
   const [result, setResult] = useState(null);
 
   const nextStepPage = (bool) => {
-    if (step >= Components.length - 1) {
+    if (step > Components.length - 1) {
       setStep(0);
     }
     if (bool) {

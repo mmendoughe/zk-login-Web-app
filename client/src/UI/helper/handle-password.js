@@ -30,7 +30,7 @@ function hash(str) {
 }
 
 function splitTo128BitArrays(bitArray) {
-  const chunkSize = 16;
+  const chunkSize = 10;
   const chunks = [];
 
   for (let i = 0; i < bitArray.length; i += chunkSize) {
