@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import {
   stringToBitArray,
@@ -15,7 +16,7 @@ function ProofGenerationForm(props) {
   const [formData, setFormData] = useState(null);
   const [provider, setProvider] = useState(null);
   const [username, setUsername] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (provider && proof && hashes && formData) {
@@ -80,7 +81,8 @@ function ProofGenerationForm(props) {
         pass3: args[2],
         pass4: args[3],
         hash1: args[4],
-        hash2: args[5]
+        hash2: args[5],
+        address: BigInt(String(account)).toString(),
       };
       setFormData(formData);
 
