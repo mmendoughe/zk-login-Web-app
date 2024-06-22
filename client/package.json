@@ -3,13 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@metamask/detect-provider": "^2.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "bn.js": "^5.2.1",
+    "buffer": "^6.0.3",
+    "crypto-js": "^4.2.0",
+    "ethers": "^6.12.1",
+    "fs": "^0.0.1-security",
+    "js-sha256": "^0.11.0",
+    "process": "^0.11.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5",
+    "web-vitals": "^2.1.4",
+    "zokrates-js": "^1.1.9"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,6 +45,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "proxy": "http://localhost:3001"
 }

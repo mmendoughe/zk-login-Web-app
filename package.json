@@ -1,0 +1,11 @@
+{
+  "name": "zk-login-web-app",
+  "version": "1.0.0",
+  "description": "Zero-Knowledge proof generation tool",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
