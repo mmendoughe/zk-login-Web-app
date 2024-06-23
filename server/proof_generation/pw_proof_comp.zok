@@ -1,8 +1,33 @@
 import "hashes/sha256/512bitPacked" as sha256packed;
-def main(private field a, private field b, private field c, private field d, public field hash1, public field hash2, public u64 username, public u64 nonce) {
-      field[2] h = sha256packed([a, b, c, d]);
-      assert(h[0] == hash1);
-      assert(h[1] == hash2);
-      log("h is {}", h);
-      return;
+from "./helpers.zok" import xor_u8_arrays, u8_array_to_fields;
+
+def main(
+    u8[20] username,              // Public input
+    private u8[20] password,      // Private input
+    u8[20] contract_address,      // Public input
+    u8[20] nonce,                 // Public input
+    u8[20] wallet_address,        // Public input
+    field[2] password_hash        // Public input: This is the hash to compare against
+) -> bool {
+    // XOR username, password, contract_address, wallet_address, and nonce
+    u8[20] mut result = [0; 20];
+    result = xor_u8_arrays(result, username);
+    result = xor_u8_arrays(result, password);
+    result = xor_u8_arrays(result, contract_address);
+    result = xor_u8_arrays(result, wallet_address);
+    result = xor_u8_arrays(result, nonce);
+
+    // Convert password to fields for hashing
+    field[4] password_fields_packed = u8_array_to_fields(password);
+
+    // Hash the password using sha256packed
+    field[2] computed_password_hash = sha256packed(password_fields_packed);
+
+    // Compare the computed password hash with the provided password_hash
+    for u32 i in 0..2 {
+        assert(computed_password_hash[i] == password_hash[i]);
+    }
+
+    // Return true to indicate the proof is valid
+    return true;
 }
