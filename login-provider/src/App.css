@@ -1,7 +1,10 @@
 .App {
   text-align: center;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  background-color: #dae8f5;
+  min-height: 100vh;
+  font: 'Roboto';
 }
 
 .centering {
@@ -11,39 +14,42 @@
   margin-top: 100px;
 }
 
-.App-logo {
-  height: 40vmin;
+.App-logo img {
+  height: 40px;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.App-body {
+  background-color: #ffffff;
+  height: 40vh;
+  width: 70vw;
+  min-width: 900px;
   display: flex;
   flex-direction: column;
+  border-radius: 30px;
+  margin-top: 15vh;
+  position: relative;
+}
+
+.SidesL {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  text-align: left;
+}
+
+.SidesR {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 20px;
 }
 
 .App-link {
   color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .loading-circle {
@@ -67,51 +73,44 @@
   width: 50vw;
 }
 
-/* Style for the container div */
-form {
+.form-container {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Center align the items */
-  max-width: 300px;
+  align-items: center;
   margin: 0 auto;
+  align-self: center;
 }
 
-/* Style for the label */
+.input-container {
+  position: relative;
+  width: 100%;
+  min-width: 350px;
+  margin-bottom: 16px;
+}
+
 label {
-  margin-bottom: 8px;
-  font-size: 16px;
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: white;
+  padding: 0 5px;
+  font-size: 14px;
   font-weight: bold;
+  color: #4285F4;
 }
 
-/* Style for the input field */
 input[type="text"] {
   width: 100%;
   padding: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
+  border: 2px solid #4285F4;
   border-radius: 4px;
-  text-align: center;  /* Center align the text inside the input */
-}
-
-/* Style for the submit button */
-.submit-btn {
-  width: 200px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;  /* Center align the text inside the button */
-}
-
-.submit-btn:hover {
-  background-color: gray;
+  box-sizing: border-box;
 }
 
 textarea.proof {
-  width: 60vw;
-  padding: 8px;
-  margin-bottom: 16px;
+  width: 80%;
+  height: 25%;
+  margin-bottom: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   text-align: left;
@@ -123,4 +122,106 @@ textarea.proof {
   align-items: center;
   max-width: 500px;
   margin: 0 auto;
+}
+
+.rows {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.text {
+  color: #545454;
+  align-self: flex-start;
+}
+
+.nonce-display {
+  display: flex;
+  flex-direction: row;
+  background-color: #4c8bf5;
+  color: white;
+  height: 40px;
+  border-radius: 15px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.nonce-display p {
+  margin-left: 10px;
+}
+
+.buttons {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: auto;
+}
+
+.copy-button {
+  margin-top: 10px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 5px;
+  width: 45px;
+  height: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+.copy-button:active {
+  color: black;
+}
+
+.submit-btn {
+  width: 80px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #4285F4;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  border-radius: 20px;
+  align-items: center;
+}
+
+.submit-btn:hover {
+  background-color: rgb(35, 54, 158);
+}
+
+.create-btn {
+  width: 150px;
+  padding: 10px 20px;
+  border: none;
+  background-color: white;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  color: #4285F4;
+  border-radius: 20px;
+  align-items: center;
+}
+
+.create-btn:hover {
+  color: rgb(35, 54, 158);
+}
+
+.onboard-btn {
+  width: 250px;
+  padding: 10px 20px;
+  border: none;
+  background-color: rgb(59, 59, 255);
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  border-radius: 30px;
+  align-items: center;
+}
+
+.onboard-btn:hover {
+  background-color: rgb(35, 54, 158);
 }

@@ -26,16 +26,7 @@ async function makeProof(password) {
     argsHash
   ).output;
 
-  const outputHash = JSON.parse(outputHashString);
-  console.log("Output:", outputHash);
-
-  const args = [...argsHash];
-  if (outputHash) {
-    args.push(outputHash[0]);
-    args.push(outputHash[1]);
-  }
-
-  return { args };
+  return { outputHashString };
 }
 
 export { makeProof };

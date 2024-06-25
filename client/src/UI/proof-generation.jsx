@@ -5,6 +5,7 @@ import {
   splitTo128BitArrays,
   convertToFieldString,
   stringToNumber,
+  hash,
 } from "./helper/handle-password";
 import { onboardMM } from "../client/web3";
 import { Web3Provider } from "../client/provider";
@@ -45,16 +46,17 @@ function ProofGenerationForm(props) {
     setProvider(new Web3Provider(prov, account));
 
     // handle inputs
-    const password = stringToBitArray(event.target.proof.value);
-    const passwordParts = splitTo128BitArrays(password);
-    console.log("passwordParts:  ", passwordParts);
-    const fieldChunks = passwordParts.map((chunk) =>
-      convertToFieldString(chunk)
-    );
-    console.log("fieldChunks:  ", fieldChunks);
+    const password = stringToNumber(event.target.proof.value);
+    // const passwordParts = splitTo128BitArrays(password);
+    // console.log("passwordParts:  ", passwordParts);
+    // const fieldChunks = passwordParts.map((chunk) =>
+    //   convertToFieldString(chunk)
+    // );
+    // console.log("fieldChunks:  ", fieldChunks);
+    const fieldChunks = [password]
     if (fieldChunks.length > 4) {
       console.error("Password too long");
-      setLoading(false); // Reset loading state if there's an error
+      setLoading(false);
       return;
     }
     const passwordArgs = fieldChunks;
@@ -62,20 +64,30 @@ function ProofGenerationForm(props) {
       const zeroBytes = "0";
       passwordArgs.push(zeroBytes);
     }
+    console.log("Password Args: ", passwordArgs);
 
     try {
-      const { args } = await makeProof(passwordArgs);
+      const { outputHashString } = await makeProof(passwordArgs);
+      const outputHash = JSON.parse(outputHashString);
+      console.log("Output:", outputHash);
+
+      const args = [...passwordArgs];
+      if (outputHash) {
+        args.push(outputHash[0]);
+        args.push(outputHash[1]);
+      }
       if (args.length !== 6) {
         console.error("Invalid proof arguments");
         setLoading(false); // Reset loading state if there's an error
         return;
       }
+      console.log("Hash zok: ", args[4], args[5]);
       setUsername(event.target.id.value);
 
       setHashes(args.slice(4, 6));
       const formData = {
-        id: stringToNumber(event.target.id.value),
-        nonce: stringToNumber(event.target.nonce.value),
+        id: stringToNumber(event.target.id.value).toString(),
+        nonce: event.target.nonce.value,
         pass1: args[0],
         pass2: args[1],
         pass3: args[2],
@@ -118,7 +130,7 @@ function ProofGenerationForm(props) {
 
   return (
     <div className="login-form">
-      <h2>Login</h2>
+      <h2>Proof Generation Tool</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="id">Enter your Username:</label>

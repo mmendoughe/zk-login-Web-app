@@ -39,6 +39,11 @@
       "name": "nonce",
       "public": true,
       "type": "u64"
+    },
+    {
+      "name": "address",
+      "public": true,
+      "type": "field"
     }
   ],
   "output": {

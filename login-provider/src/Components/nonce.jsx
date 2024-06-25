@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { Buffer } from "buffer";
 import { ethers } from "ethers";
 import { VerifierMetaData } from "../lib/abi";
-import { stringToNumber } from "./helper/handle-password";
+import logo from "../google_logo.svg";
+import { BiCopy } from "react-icons/bi";
+
 const BN = require("bn.js");
 
 function Nonce(props) {
@@ -67,8 +69,19 @@ function Nonce(props) {
       Y: String(proof.c[1]),
     };
     try {
-      console.log("Args: ", props.name, props.nameNum, stringToNumber(nonce.toString()), { a, b, c });
-      const args = [props.name, props.nameNum, stringToNumber(nonce.toString()), { a, b, c }];
+      console.log(
+        "Args: ",
+        props.name,
+        props.nameNum,
+        nonce.toString(),
+        { a, b, c }
+      );
+      const args = [
+        props.name,
+        props.nameNum,
+        nonce.toString(),
+        { a, b, c },
+      ];
       const tx = await verifier.verifyProof(...args, {
         from: address,
         gasLimit: 1000000,
@@ -103,24 +116,41 @@ function Nonce(props) {
   };
 
   return (
-    <div className="container">
-      <h1>Please copy the Identifier: </h1>
-      <h2>{nonce.toString()}</h2>
-      <button className="submit-btn" onClick={() => copyToClipboard()}>
-        Copy
-      </button>
-      <h2>
-        Use the zk-login tool to create the proof of the password and input it
-        here:
-      </h2>
-      <textarea
-        className="proof"
-        placeholder='{"a":[],"b":[],"c":[]}'
-        onChange={handleInputChange}
-      ></textarea>
-      <button className="submit-btn" onClick={() => onboard()}>
-        Onboard and Verify Proof
-      </button>
+    <div className="rows">
+      <div className="SidesL">
+        <div className="App-logo">
+          <img src={logo} alt="Logo" />
+        </div>
+        <h2>Login</h2>
+        <h3>Login with google account.</h3>
+      </div>
+      <div className="SidesL">
+        <h3>Please copy the Identifier: </h3>
+        <div className="nonce-display">
+          <p>{nonce.toString()}</p>
+          <div
+            className="copy-button"
+            id="copyButton"
+            onClick={() => copyToClipboard()}
+          >
+            <BiCopy size={20} />
+          </div>
+        </div>
+        <p className="text">
+          Use the zk-login tool to create the proof of the password and input it
+          here:
+        </p>
+        <textarea
+          className="proof"
+          placeholder='{"a":[],"b":[],"c":[]}'
+          onChange={handleInputChange}
+        ></textarea>
+        <div className="buttons">
+          <button className="onboard-btn" onClick={() => onboard()}>
+            Onboard and Verify Proof
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
