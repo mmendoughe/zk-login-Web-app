@@ -1,49 +1,26 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
-import {
-  stringToBitArray,
-  splitTo128BitArrays,
-  convertToFieldString,
-  stringToNumber,
-  hash,
-} from "./helper/handle-password";
-import { onboardMM } from "../client/web3";
-import { Web3Provider } from "../client/provider";
+import { stringToNumber } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
 
 function ProofGenerationForm(props) {
   const [proof, setProof] = useState(null);
   const [hashes, setHashes] = useState(null);
   const [formData, setFormData] = useState(null);
-  const [provider, setProvider] = useState(null);
   const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (provider && proof && hashes && formData) {
+    if (proof && hashes && formData) {
       console.log("Submitting Data");
-      props.submit(proof.proof, hashes, provider, formData.nonce, formData.id, username);
-      setLoading(false); // Reset loading state after submit
+      props.submit(proof.proof, hashes, formData.nonce, formData.id, username);
+      setLoading(false);
     }
-  }, [provider, proof, hashes, formData, props, username]);
+  }, [proof, hashes, formData, props, username]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Set loading state to true when form is submitted
-    // connect to MetaMask
-    let account;
-    let prov;
-    try {
-      const onboard = await onboardMM([31337]);
-      account = onboard.account;
-      prov = onboard.provider;
-      console.log("Account:", account);
-    } catch (error) {
-      console.error("Error onboarding MetaMask:", error);
-      setLoading(false); // Reset loading state if there's an error
-      return;
-    }
-    setProvider(new Web3Provider(prov, account));
+    setLoading(true);
 
     // handle inputs
     const password = stringToNumber(event.target.proof.value);
@@ -53,7 +30,7 @@ function ProofGenerationForm(props) {
     //   convertToFieldString(chunk)
     // );
     // console.log("fieldChunks:  ", fieldChunks);
-    const fieldChunks = [password]
+    const fieldChunks = [password];
     if (fieldChunks.length > 4) {
       console.error("Password too long");
       setLoading(false);
@@ -78,7 +55,7 @@ function ProofGenerationForm(props) {
       }
       if (args.length !== 6) {
         console.error("Invalid proof arguments");
-        setLoading(false); // Reset loading state if there's an error
+        setLoading(false);
         return;
       }
       console.log("Hash zok: ", args[4], args[5]);
@@ -98,25 +75,25 @@ function ProofGenerationForm(props) {
       };
       setFormData(formData);
 
-      const response = await fetch('/run-script', {
-        method: 'POST',
+      const response = await fetch("/run-script", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const proofJson = await response.json();
-        console.log('Proof JSON:', proofJson);
+        console.log("Proof JSON:", proofJson);
         setProof(proofJson);
       } else {
-        console.error('Error:', await response.text());
-        setLoading(false); // Reset loading state if there's an error
+        console.error("Error:", await response.text());
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error executing script:", error);
-      setLoading(false); // Reset loading state if there's an error
+      setLoading(false);
     }
   };
 
@@ -140,7 +117,7 @@ function ProofGenerationForm(props) {
             name="id"
             placeholder="Username"
             required
-            disabled={loading} // Disable input while loading
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -151,7 +128,7 @@ function ProofGenerationForm(props) {
             name="proof"
             placeholder="Password"
             required
-            disabled={loading} // Disable input while loading
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -162,15 +139,15 @@ function ProofGenerationForm(props) {
             name="nonce"
             placeholder="0x..."
             required
-            disabled={loading} // Disable input while loading
+            disabled={loading}
           />
         </div>
         {loading ? (
           <div className="loading-circle"></div>
         ) : (
           <a href="/login" className="submit-btn" onClick={handleLinkClick}>
-          &gt;
-        </a>
+            &gt;
+          </a>
         )}
       </form>
     </div>

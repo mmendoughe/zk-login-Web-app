@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ProofGenerationForm from "./proof-generation";
-import Submit from "./submit-proof";
-import Success from "./success";
-import Failure from "./failure";
+import Proof from "./proof";
 
-const Components = ["PROOF-GENERATION", "PUBLISH-PROOF", "SUCCESS", "FAILURE"];
+const Components = ["PROOF-GENERATION", "PUBLISH-PROOF"];
 function GenerationProcess() {
   const [step, setStep] = useState(0);
   const [proof, setProof] = useState(null);
-  const [provider, setProvider] = useState(null);
   const [nonce, setNonce] = useState(null);
   const [nameNum, setNameNum] = useState(null);
   const [name, setName] = useState(null);
   const [hashes, setHashes] = useState(null);
 
   useEffect(() => {
-    console.log("Provider:", provider);
     console.log("Name:", name);
-    if (provider && proof && hashes) {
+    if (proof && hashes) {
       nextStepPage(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, proof, nonce, name, hashes]);
+  }, [proof, nonce, name, hashes]);
 
   const nextStepPage = (bool) => {
     if (step >= Components.length - 1) {
@@ -38,10 +34,9 @@ function GenerationProcess() {
       case 0:
         return (
           <ProofGenerationForm
-            submit={(proof, hashes, provider, nonce, nameNum, name) => {
+            submit={(proof, hashes, nonce, nameNum, name) => {
               setProof(proof);
               setHashes(hashes);
-              setProvider(provider);
               setNonce(nonce);
               setNameNum(nameNum);
               setName(name);
@@ -50,10 +45,9 @@ function GenerationProcess() {
         );
       case 1:
         return (
-          <Submit
+          <Proof
             proof={proof}
             hashes={hashes}
-            provider={provider}
             nonce={nonce}
             nameNum={nameNum}
             name={name}
@@ -67,18 +61,15 @@ function GenerationProcess() {
             }}
           />
         );
-      case 2:
-        return <Success />;
-      case 3:
-        return <Failure submit={() => nextStepPage(false)} />;
       default:
         return (
           <ProofGenerationForm
-            submit={(proof, provider, nonce) => {
+            submit={(proof, hashes, nonce, nameNum, name) => {
               setProof(proof);
-              setProvider(provider);
+              setHashes(hashes);
               setNonce(nonce);
-              nextStepPage(false);
+              setNameNum(nameNum);
+              setName(name);
             }}
           />
         );

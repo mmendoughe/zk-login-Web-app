@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
-import ProcessSelection from "./UI/processSelection";
-import GenerationProcess from "./UI/generation";
-import HashProcess from "./UI/hash";
+import ProcessSelection from "./Components/processSelection";
+import GenerationProcess from "./Components/generation";
+import HashProcess from "./Components/hash";
 
 function App() {
   const [step, setStep] = React.useState(0);

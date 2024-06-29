@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { VerifierMetaData } from "../../lib/abi";
 
+// Return object for the contract interaction functions.
 class Result {
   constructor(tx, message) {
     this.tx = tx;
@@ -8,6 +9,7 @@ class Result {
   }
 }
 
+// Verify the proof of the user.
 async function verifyProof(input, name, nameNum, nonce, provider) {
   if (provider == null) {
     console.error("Provider not set");
@@ -15,7 +17,6 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
   console.log("getting signer");
   const signer = await provider.getSigner();
   const address = provider.getAddress();
-  // Send proof and nonce to verifier
   const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   const cABI = JSON.parse(VerifierMetaData.ABI);
   const verifier = new ethers.Contract(cAddr, cABI, signer);
@@ -39,6 +40,7 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
       "Invalid format of proof. Make sure to copy the complete proof"
     );
   }
+  // Convert the proof to the correct format.
   let bx = new Array(2);
   bx[0] = String(proof.b[0][0]);
   bx[1] = String(proof.b[0][1]);
@@ -76,6 +78,7 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
   }
 }
 
+// Change the password of the user.
 async function changePassword(input, hashes, name, nameNum, nonce, provider) {
   if (provider == null) {
     console.error("Provider not set");
@@ -83,13 +86,14 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
   console.log("getting signer");
   const signer = await provider.getSigner();
   const address = provider.getAddress();
-  // Send proof and nonce to verifier
   const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   const cABI = JSON.parse(VerifierMetaData.ABI);
   const verifier = new ethers.Contract(cAddr, cABI, signer);
 
   let proof;
-  let outputHash = null;
+  let outputHash;
+
+  // Convert the hash to the correct format.
   try {
     outputHash = JSON.parse(hashes);
   } catch (error) {
@@ -113,8 +117,9 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
       "Hash has invalid format. Make sure to copy the hash correctly."
     );
   }
+
+  // Convert the proof to the correct format.
   try {
-    console.log("Verifying tx");
     proof = JSON.parse(input);
   } catch {
     return new Result(
@@ -175,18 +180,21 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
   }
 }
 
+// Add a new user to the contract.
 async function addUser(userName, hashes, provider) {
   if (provider == null) {
     console.error("Provider not set");
   }
   console.log("getting signer");
   const signer = await provider.getSigner();
-  // Send proof and nonce to verifier
   const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   const cABI = JSON.parse(VerifierMetaData.ABI);
   const verifier = new ethers.Contract(cAddr, cABI, signer);
   console.log("Adding User");
+
   let outputHash = null;
+
+  // Convert the hash to the correct format.
   try {
     outputHash = JSON.parse(hashes);
   } catch (error) {

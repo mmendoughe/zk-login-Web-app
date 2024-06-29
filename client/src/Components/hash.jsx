@@ -18,7 +18,7 @@ function HashGenerationForm(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Set loading state to true when form is submitted
+    setLoading(true);
 
     // handle inputs
     const password = stringToNumber(event.target.proof.value);
@@ -46,7 +46,7 @@ function HashGenerationForm(props) {
       setHashes(outputHashString);
     } catch (error) {
       console.error("Error making hash:", error);
-      setLoading(false); // Reset loading state if there's an error
+      setLoading(false);
     }
   };
 

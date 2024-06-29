@@ -3,7 +3,6 @@ import "./App.css";
 import Form from "./Components/form";
 import Nonce from "./Components/nonce";
 import Success from "./Components/success";
-import Failure from "./Components/failure";
 import Create from "./Components/create";
 import Change from "./Components/change";
 import { useEffect } from "react";
@@ -26,7 +25,7 @@ function App() {
 
   useEffect(() => {
     if (input && nonce) {
-      setStep(5);
+      setStep(4);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input, nonce]);
@@ -36,8 +35,6 @@ function App() {
     if (result != null) {
       if (result === true) {
         setStep(2);
-      } else {
-        setStep(3);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +48,7 @@ function App() {
             submit={(userName) => {
               setUserName(userName);
             }}
-            create={() => setStep(4)}
+            create={() => setStep(3)}
           />
         );
       case 1:
@@ -71,10 +68,8 @@ function App() {
       case 2:
         return <Success />;
       case 3:
-        return <Failure submit={() => setStep(0)} />;
-      case 4:
         return <Create submit={() => setStep(0)} />;
-      case 5:
+      case 4:
         return (
           <Change
             name={userName}

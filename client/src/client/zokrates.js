@@ -1,5 +1,5 @@
 import { initialize } from "zokrates-js";
-import { convertToFieldString } from "../UI/helper/handle-password";
+import { convertToFieldString } from "../Components/helper/handle-password";
 
 async function makeProof(password) {
   let argsHash = [];
