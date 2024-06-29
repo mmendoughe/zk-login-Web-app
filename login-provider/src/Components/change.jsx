@@ -2,26 +2,24 @@ import React, { useState, useEffect } from "react";
 import logo from "../google_logo.svg";
 import { onboardMM } from "../client/web3";
 import { Web3Provider } from "../client/provider";
-import { addUser } from "./helper/contract-interaction";
+import { changePassword } from "./helper/contract-interaction";
 
-function Create(props) {
-  const [userName, setUserName] = useState("");
+function Change(props) {
   const [hash, setHash] = useState("");
   const [provider, setProvider] = useState(null);
   const [error, setError] = useState(null);
   const [tx, setTx] = useState(null);
 
   useEffect(() => {
-    if (userName !== "" && hash !== "") {
-      console.log("Username2:", userName);
+    if (hash !== "") {
       onboard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userName, hash]);
+  }, [hash]);
 
   useEffect(() => {
     if (provider) {
-      AddUser();
+      ChangePassword();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
@@ -34,9 +32,6 @@ function Create(props) {
   }, [tx]);
 
   const handleButtonClick = () => {
-    const usernameInput = document.querySelector('input[name="username"]');
-    console.log("Username:", usernameInput.value);
-    setUserName(usernameInput.value);
     setHash(document.querySelector('input[name="hash"]').value);
   };
 
@@ -47,8 +42,8 @@ function Create(props) {
     setProvider(new Web3Provider(prov, account));
   };
 
-  const AddUser = async () => {
-    const result = await addUser(userName, hash, provider);
+  const ChangePassword = async () => {
+    const result = await changePassword(props.input, hash, props.name, props.nameNum, props.nonce, provider);
     if (result.tx == null) {
       setError(result.message);
     }
@@ -63,19 +58,15 @@ function Create(props) {
         <div className="App-logo">
           <img src={logo} alt="Logo" />
         </div>
-        <h2>Create Google-Account</h2>
-        <h3>Please input the Username</h3>
+        <h2>Login</h2>
+        <h3>Change Password</h3>
       </div>
       <div className="SidesL">
         <p className="text">
-          Please generate the hashes of your password using the Proof-Generation
+          Please generate the hashes of your new password using the Proof-Generation
           tool.
         </p>
         <form className="form-container">
-          <div className="input-container">
-            <label>Username</label>
-            <input type="text" name="username" />
-          </div>
           <div className="input-container">
             <label>Hashes Password</label>
             <input type="text" name="hash" />
@@ -83,7 +74,7 @@ function Create(props) {
         </form>
         {error && <p className="error-message">{error}</p>}
         <div className="buttons">
-          <button className="create-btn" onClick={() => props.submit()}>
+          <button className="create-btn" onClick={() => props.back()}>
             Back to login
           </button>
           <button className="submit-btn" onClick={handleButtonClick}>
@@ -95,4 +86,4 @@ function Create(props) {
   );
 }
 
-export default Create;
+export default Change;

@@ -2,16 +2,17 @@ import { onboardMM } from "../client/web3";
 import { Web3Provider } from "../client/provider";
 import { useState, useEffect } from "react";
 import { Buffer } from "buffer";
-import { ethers } from "ethers";
-import { VerifierMetaData } from "../lib/abi";
 import logo from "../google_logo.svg";
 import { BiCopy } from "react-icons/bi";
+import { verifyProof } from "./helper/contract-interaction";
 
 const BN = require("bn.js");
 
 function Nonce(props) {
   const [provider, setProvider] = useState(null);
   const [input, setInput] = useState("");
+  const [error, setError] = useState(null);
+  const [tx, setTx] = useState(null);
   const [nonce] = useState(() => {
     const array = new Uint8Array(5);
     window.crypto.getRandomValues(array);
@@ -26,70 +27,30 @@ function Nonce(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider, input]);
 
+  useEffect(() => {
+    console.log("TX:", tx);
+    if (tx) {
+      props.submit(tx);
+    } else {
+      setError("Sorry, the proof is invalid. Make sure you have the correct proof.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tx]);
+
   const handleSubmit = async (provider, nonce, input) => {
     console.log("Provider:", provider);
     console.log("Nonce:", nonce.toString());
     console.log("Input:", input);
 
-    if (provider == null) {
-      console.error("Provider not set");
+    const result = await verifyProof(input, props.name, props.nameNum, nonce, provider);
+    console.log("Result:", result);
+    if (result.tx == null) {
+      console.log("Error:", result.message, result.tx);
+      setError(result.message);
     }
-    console.log("getting signer");
-    const signer = await provider.getSigner();
-    const address = provider.getAddress();
-    // Send proof and nonce to verifier
-    const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-    const cABI = JSON.parse(VerifierMetaData.ABI);
-    const verifier = new ethers.Contract(cAddr, cABI, signer);
-
-    console.log("Verifying tx");
-    const proof = JSON.parse(input);
-    console.log("Proof: ", proof);
-    if (proof.a.length !== 2 || proof.b.length !== 2 || proof.c.length !== 2) {
-      console.error("Invalid proof");
-      return;
-    }
-    let bx = new Array(2);
-    bx[0] = String(proof.b[0][0]);
-    bx[1] = String(proof.b[0][1]);
-
-    let by = new Array(2);
-    by[0] = String(proof.b[1][0]);
-    by[1] = String(proof.b[1][1]);
-    const a = {
-      X: String(proof.a[0]),
-      Y: String(proof.a[1]),
-    };
-    const b = {
-      X: bx,
-      Y: by,
-    };
-    const c = {
-      X: String(proof.c[0]),
-      Y: String(proof.c[1]),
-    };
-    try {
-      console.log(
-        "Args: ",
-        props.name,
-        props.nameNum,
-        nonce.toString(),
-        { a, b, c }
-      );
-      const args = [
-        props.name,
-        props.nameNum,
-        nonce.toString(),
-        { a, b, c },
-      ];
-      const tx = await verifier.verifyProof(...args, {
-        from: address,
-        gasLimit: 1000000,
-      });
-      console.log("VerifyProof Tx:", tx);
-      props.submit(tx);
-    } catch (error) {
-      console.log(error);
+    else {
+      console.log("setting TX:", result.tx);
+      setTx(result.tx);
     }
   };
 
@@ -125,7 +86,7 @@ function Nonce(props) {
         <h3>Login with google account.</h3>
       </div>
       <div className="SidesL">
-        <h3>Please copy the Identifier: </h3>
+        <h3>Please copy the Nonce: </h3>
         <div className="nonce-display">
           <p>{nonce.toString()}</p>
           <div
@@ -140,14 +101,18 @@ function Nonce(props) {
           Use the zk-login tool to create the proof of the password and input it
           here:
         </p>
-        <textarea
+        <input
           className="proof"
           placeholder='{"a":[],"b":[],"c":[]}'
           onChange={handleInputChange}
-        ></textarea>
+        ></input>
+        {error && <p className="error-message">{error}</p>}
         <div className="buttons">
+          <button className="create-btn" onClick={() => props.change(input, nonce)}>
+            Change Password
+          </button>
           <button className="onboard-btn" onClick={() => onboard()}>
-            Onboard and Verify Proof
+            Login
           </button>
         </div>
       </div>

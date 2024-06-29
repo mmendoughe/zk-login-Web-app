@@ -69,8 +69,10 @@
 }
 
 .proof {
-  height: 25vh;
-  width: 50vw;
+  height: 50px;
+  width: 350px;
+  border: 2px solid #4285F4;
+  border-radius: 4px;
 }
 
 .form-container {
@@ -176,7 +178,7 @@ textarea.proof {
 }
 
 .submit-btn {
-  width: 80px;
+  width: 100px;
   padding: 10px 20px;
   border: none;
   background-color: #4285F4;
@@ -193,7 +195,7 @@ textarea.proof {
 }
 
 .create-btn {
-  width: 150px;
+  width: 200px;
   padding: 10px 20px;
   border: none;
   background-color: white;
@@ -224,4 +226,9 @@ textarea.proof {
 
 .onboard-btn:hover {
   background-color: rgb(35, 54, 158);
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
 }

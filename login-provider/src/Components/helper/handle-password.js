@@ -15,8 +15,6 @@ function stringToNumber(str) {
     })
     .join("");
     asciiString = "0x" + asciiString;
-    console.log("Ascii String:", asciiString);
-    console.log("BigInt:", BigInt(asciiString));
 
   return BigInt(asciiString).toString();
 }

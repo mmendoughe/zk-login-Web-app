@@ -5,14 +5,17 @@ import Nonce from "./Components/nonce";
 import Success from "./Components/success";
 import Failure from "./Components/failure";
 import Create from "./Components/create";
+import Change from "./Components/change";
 import { useEffect } from "react";
 import { stringToNumber } from "./Components/helper/handle-password";
 
-// const Components = ["Form", "Nonce", "Success", "Failure", "Create"];
+// Components = ["Form", "Nonce", "Success", "Failure", "Create", "Change"];
 function App() {
   const [step, setStep] = useState(0);
   const [userName, setUserName] = useState("");
   const [result, setResult] = useState(null);
+  const [input, setInput] = useState(null);
+  const [nonce, setNonce] = useState(null);
 
   useEffect(() => {
     if (userName) {
@@ -22,6 +25,14 @@ function App() {
   }, [userName]);
 
   useEffect(() => {
+    if (input && nonce) {
+      setStep(5);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input, nonce]);
+
+  useEffect(() => {
+    console.log("Ressss: ", result);
     if (result != null) {
       if (result === true) {
         setStep(2);
@@ -51,6 +62,10 @@ function App() {
             submit={(result) => {
               setResult(result);
             }}
+            change={(input, nonce) => {
+              setInput(input);
+              setNonce(nonce);
+            }}
           />
         );
       case 2:
@@ -59,6 +74,17 @@ function App() {
         return <Failure submit={() => setStep(0)} />;
       case 4:
         return <Create submit={() => setStep(0)} />;
+      case 5:
+        return (
+          <Change
+            name={userName}
+            nameNum={stringToNumber(userName).toString()}
+            input={input}
+            nonce={nonce}
+            back={() => setStep(0)}
+            submit={() => setStep(0)}
+          />
+        );
       default:
         return <Form submit={(userName) => {}} />;
     }
@@ -66,7 +92,7 @@ function App() {
   return (
     <div className="App">
       <div className="App-body">
-          <div>{getStep()}</div>
+        <div>{getStep()}</div>
       </div>
     </div>
   );
