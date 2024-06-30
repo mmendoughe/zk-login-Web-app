@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
-import { stringToNumber } from "./helper/handle-password";
+import { stringToBigInts } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
 
 function ProofGenerationForm(props) {
@@ -9,6 +9,7 @@ function ProofGenerationForm(props) {
   const [formData, setFormData] = useState(null);
   const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (proof && hashes && formData) {
@@ -19,19 +20,21 @@ function ProofGenerationForm(props) {
   }, [proof, hashes, formData, props, username]);
 
   const handleSubmit = async (event) => {
+    setError(null);
     event.preventDefault();
     setLoading(true);
 
     // handle inputs
-    const password = stringToNumber(event.target.proof.value);
+    const password = stringToBigInts(event.target.proof.value);
     // const passwordParts = splitTo128BitArrays(password);
     // console.log("passwordParts:  ", passwordParts);
     // const fieldChunks = passwordParts.map((chunk) =>
     //   convertToFieldString(chunk)
     // );
     // console.log("fieldChunks:  ", fieldChunks);
-    const fieldChunks = [password];
+    const fieldChunks = [...password];
     if (fieldChunks.length > 4) {
+      setError("Password too long");
       console.error("Password too long");
       setLoading(false);
       return;
@@ -42,6 +45,36 @@ function ProofGenerationForm(props) {
       passwordArgs.push(zeroBytes);
     }
     console.log("Password Args: ", passwordArgs);
+
+    const userName = stringToBigInts(event.target.id.value);
+    const nameChunks = [...userName];
+    if (nameChunks.length > 4) {
+      setError("username too long");
+      console.error("username too long");
+      setLoading(false);
+      return;
+    }
+    const userNameArgs = nameChunks;
+    while (userNameArgs.length < 4) {
+      const zeroBytes = "0";
+      userNameArgs.push(zeroBytes);
+    }
+    console.log("userName Args: ", userNameArgs);
+
+    const nonce = stringToBigInts(event.target.nonce.value);
+    const nonceChunks = [...nonce];
+    if (nonceChunks.length > 4) {
+      setError("nonce too long");
+      console.error("nonce too long");
+      setLoading(false);
+      return;
+    }
+    const nonceArgs = nonceChunks;
+    while (nonceArgs.length < 4) {
+      const zeroBytes = "0";
+      nonceArgs.push(zeroBytes);
+    }
+    console.log("nonceArgs Args: ", nonceArgs);
 
     try {
       const { outputHashString } = await makeProof(passwordArgs);
@@ -62,16 +95,28 @@ function ProofGenerationForm(props) {
       setUsername(event.target.id.value);
 
       setHashes(args.slice(4, 6));
+
+      const pass = args.slice(0, 4);
+      for (let i = 0; i < 4; i++) {
+        pass[i] = BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]);
+        pass[i] = pass[i].toString();
+      }
+      console.log("Pass: ", pass);
       const formData = {
-        id: stringToNumber(event.target.id.value).toString(),
-        nonce: event.target.nonce.value,
-        pass1: args[0],
-        pass2: args[1],
-        pass3: args[2],
-        pass4: args[3],
+        pass1: pass[0],
+        pass2: pass[1],
+        pass3: pass[2],
+        pass4: pass[3],
+        user1: userNameArgs[0],
+        user2: userNameArgs[1],
+        user3: userNameArgs[2],
+        user4: userNameArgs[3],
+        nonce1: nonceArgs[0],
+        nonce2: nonceArgs[1],
+        nonce3: nonceArgs[2],
+        nonce4: nonceArgs[3],
         hash1: args[4],
         hash2: args[5],
-        address: BigInt(String(account)).toString(),
       };
       setFormData(formData);
 
@@ -137,11 +182,12 @@ function ProofGenerationForm(props) {
             type="text"
             id="nonce"
             name="nonce"
-            placeholder="0x..."
+            placeholder="..........."
             required
             disabled={loading}
           />
         </div>
+        {error && <p className="error">{error}</p>}
         {loading ? (
           <div className="loading-circle"></div>
         ) : (

@@ -6,12 +6,18 @@ Pass1=$1
 Pass2=$2
 Pass3=$3
 Pass4=$4
-Hash1=$5
-Hash2=$6
-Id=$7
-Nonce=$8
+User1=$5
+User2=$6
+User3=$7
+User4=$8
+Nonce1=$9
+Nonce2=${10}
+Nonce3=${11}
+Nonce4=${12}
+Hash1=${13}
+Hash2=${14}
 
-zokrates compute-witness -a "$Pass1" "$Pass2" "$Pass3" "$Pass4" "$Hash1" "$Hash2" "$Id" "$Nonce" --verbose
+zokrates compute-witness -a "$Pass1" "$Pass2" "$Pass3" "$Pass4" "$User1" "$User2" "$User3" "$User4" "$Nonce1" "$Nonce2" "$Nonce3" "$Nonce4" "$Hash1" "$Hash2" --verbose
 if [ $? -ne 0 ]; then
     echo "Compute witness failed"
     exit 1

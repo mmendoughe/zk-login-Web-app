@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
 import {
-  stringToNumber,
+  stringToBigInts,
 } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
 import { BiCopy } from "react-icons/bi";
@@ -21,14 +21,14 @@ function HashGenerationForm(props) {
     setLoading(true);
 
     // handle inputs
-    const password = stringToNumber(event.target.proof.value);
+    const password = stringToBigInts(event.target.proof.value);
     // const passwordParts = splitTo128BitArrays(password);
     // console.log("passwordParts:  ", passwordParts);
     // const fieldChunks = passwordParts.map((chunk) =>
     //   convertToFieldString(chunk)
     // );
     // console.log("fieldChunks:  ", fieldChunks);
-    const fieldChunks = [password];
+    const fieldChunks = [...password];
     if (fieldChunks.length > 4) {
       console.error("Password too long");
       setLoading(false);

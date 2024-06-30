@@ -26,6 +26,7 @@ function Change(props) {
 
   useEffect(() => {
     if (tx) {
+      console.log("TX:", tx);
       props.submit();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +69,7 @@ function Change(props) {
         </p>
         <form className="form-container">
           <div className="input-container">
-            <label>Hashes Password</label>
+            <label>Hashed Password</label>
             <input type="text" name="hash" />
           </div>
         </form>

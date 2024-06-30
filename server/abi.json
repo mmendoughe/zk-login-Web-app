@@ -1,49 +1,40 @@
 {
   "inputs": [
     {
-      "name": "a",
+      "name": "password",
       "public": false,
-      "type": "field"
-    },
-    {
-      "name": "b",
-      "public": false,
-      "type": "field"
-    },
-    {
-      "name": "c",
-      "public": false,
-      "type": "field"
-    },
-    {
-      "name": "d",
-      "public": false,
-      "type": "field"
-    },
-    {
-      "name": "hash1",
-      "public": true,
-      "type": "field"
-    },
-    {
-      "name": "hash2",
-      "public": true,
-      "type": "field"
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
     },
     {
       "name": "username",
       "public": true,
-      "type": "u64"
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
     },
     {
       "name": "nonce",
       "public": true,
-      "type": "u64"
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
     },
     {
-      "name": "address",
+      "name": "hash",
       "public": true,
-      "type": "field"
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
     }
   ],
   "output": {

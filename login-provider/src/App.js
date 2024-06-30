@@ -6,7 +6,7 @@ import Success from "./Components/success";
 import Create from "./Components/create";
 import Change from "./Components/change";
 import { useEffect } from "react";
-import { stringToNumber } from "./Components/helper/handle-password";
+import { stringToBigInts } from "./Components/helper/handle-password";
 
 // Components = ["Form", "Nonce", "Success", "Failure", "Create", "Change"];
 function App() {
@@ -55,7 +55,7 @@ function App() {
         return (
           <Nonce
             name={userName}
-            nameNum={stringToNumber(userName).toString()}
+            nameNum={stringToBigInts(userName)}
             submit={(result) => {
               setResult(result);
             }}
@@ -73,9 +73,9 @@ function App() {
         return (
           <Change
             name={userName}
-            nameNum={stringToNumber(userName).toString()}
+            nameNum={stringToBigInts(userName)}
             input={input}
-            nonce={nonce}
+            nonce={stringToBigInts(nonce.toString())}
             back={() => setStep(0)}
             submit={() => setStep(0)}
           />

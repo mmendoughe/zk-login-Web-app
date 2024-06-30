@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-var sha256 = require("js-sha256");
+// var sha256 = require("js-sha256");
 
-const CryptoJS = require("crypto-js");
+// const CryptoJS = require("crypto-js");
 
 function stringToBitArray(str) {
   const encoder = new TextEncoder();
@@ -32,7 +32,58 @@ function stringToNumber(str) {
   return BigInt(asciiString).toString();
 }
 
-function hash(str) {
+function stringToBigInts(str) {
+  // Split the string into chunks of 5 characters so that the bigInt can be converted to u64
+  const chunks = [];
+  for (let i = 0; i < str.length; i += 5) {
+    chunks.push(str.slice(i, i + 5));
+  }
+
+  // Encode each chunk to a BigInt
+  return chunks.map(encodeChunk);
+}
+
+function encodeChunk(chunk) {
+  let asciiString = Array.from(chunk)
+    .map((char) => {
+      return char.charCodeAt(0).toString().padStart(3, "0");
+    })
+    .join("");
+  asciiString = "0x" + asciiString;
+  return BigInt(asciiString).toString();
+}
+
+function xorBigInts(bigInt1, bigInt2, bigInt3) {
+  // Convert BigInts to binary strings
+  let bin1 = bigInt1.toString(2);
+  let bin2 = bigInt2.toString(2);
+  let bin3 = bigInt3.toString(2);
+
+  // Find the maximum length among the binary strings
+  const maxLength = Math.max(bin1.length, bin2.length, bin3.length);
+
+  // Pad binary strings with leading zeros to match the maximum length
+  bin1 = bin1.padStart(maxLength, '0');
+  bin2 = bin2.padStart(maxLength, '0');
+  bin3 = bin3.padStart(maxLength, '0');
+
+  // Initialize an empty string for the result
+  let result = '';
+
+  // XOR each bit
+  for (let i = 0; i < maxLength; i++) {
+    const bit1 = bin1[i] === '1' ? 1 : 0;
+    const bit2 = bin2[i] === '1' ? 1 : 0;
+    const bit3 = bin3[i] === '1' ? 1 : 0;
+    const xorBit = bit1 ^ bit2 ^ bit3;
+    result += xorBit.toString();
+  }
+
+  // Convert the result binary string back to a BigInt
+  return BigInt('0b' + result);
+}
+
+/*function hash(str) {
   const hash = sha256.create();
   hash.update(str);
   const h = hash.hex();
@@ -59,13 +110,13 @@ function convertToFieldArray(byteArray) {
   return fieldArray;
 }
 
-function convertToFieldString(byteArray) {
+*/function convertToFieldString(byteArray) {
   let fieldString = "";
   for (let i = 0; i < byteArray.length; i++) {
     fieldString += byteArray[i].toString();
   }
   return fieldString;
-}
+}/*
 
 // Function to convert a byte array to a hex string
 function byteArrayToHexString(byteArray) {
@@ -106,14 +157,12 @@ function hashByteArray(args, toHex = false) {
   } else {
     return [hashArray1, hashArray2];
   }
-}
+}*/
 
 export {
-  stringToBitArray,
-  splitTo128BitArrays,
-  convertToFieldArray,
-  hash,
-  hashByteArray,
   convertToFieldString,
+  stringToBitArray,
   stringToNumber,
+  stringToBigInts,
+  xorBigInts,
 };

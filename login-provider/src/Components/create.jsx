@@ -13,6 +13,7 @@ function Create(props) {
 
   useEffect(() => {
     if (userName !== "" && hash !== "") {
+      setError(null);
       console.log("Username2:", userName);
       onboard();
     }
@@ -77,7 +78,7 @@ function Create(props) {
             <input type="text" name="username" />
           </div>
           <div className="input-container">
-            <label>Hashes Password</label>
+            <label>Hashed Password</label>
             <input type="text" name="hash" />
           </div>
         </form>

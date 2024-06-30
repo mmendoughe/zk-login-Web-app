@@ -61,7 +61,7 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
     Y: String(proof.c[1]),
   };
   try {
-    const args = [name, nameNum, nonce.toString(), { a, b, c }];
+    const args = [name, nameNum, nonce, { a, b, c }];
     console.log("Args: ", args);
     const tx = await verifier.verifyProof(...args, {
       from: address,
@@ -159,7 +159,7 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
     const args = [
       name,
       nameNum,
-      nonce.toString(),
+      nonce,
       { a, b, c },
       outputHash[0],
       outputHash[1],
@@ -170,6 +170,18 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
       gasLimit: 1000000,
     });
     console.log("changePassword Tx:", tx);
+
+    const receipt = await tx.wait();
+    console.log("Transaction confirmed in block:", receipt.blockNumber);
+
+    if (receipt.status === 0) {
+      return new Error("Transaction failed.");
+    }
+
+    const updatedReceipt = await provider.getTransactionReceipt(tx.hash);
+    if (updatedReceipt.status === 0) {
+      return new Error("Transaction failed.");
+    }
     return new Result(tx, null);
   } catch (error) {
     console.log(error);

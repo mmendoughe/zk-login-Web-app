@@ -5,6 +5,7 @@ import { Buffer } from "buffer";
 import logo from "../google_logo.svg";
 import { BiCopy } from "react-icons/bi";
 import { verifyProof } from "./helper/contract-interaction";
+import { stringToBigInts } from "./helper/handle-password";
 
 const BN = require("bn.js");
 
@@ -43,7 +44,7 @@ function Nonce(props) {
     console.log("Nonce:", nonce.toString());
     console.log("Input:", input);
 
-    const result = await verifyProof(input, props.name, props.nameNum, nonce, provider);
+    const result = await verifyProof(input, props.name, props.nameNum, stringToBigInts(nonce.toString()), provider);
     console.log("Result:", result);
     if (result.tx == null) {
       console.log("Error:", result.message, result.tx);
