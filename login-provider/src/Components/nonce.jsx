@@ -31,7 +31,8 @@ function Nonce(props) {
     console.log("TX:", tx);
     if (tx) {
       props.submit(tx);
-    } else {
+    }
+    if (tx === false) {
       setError("Sorry, the proof is invalid. Make sure you have the correct proof.");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

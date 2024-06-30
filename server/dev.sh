@@ -1,5 +1,8 @@
+#navigate to correct folder
+cd server
+
 # Should be done only once (Trusted Plattform)
-zokrates compile -i proof_generation/pw_proof_comp.zok
+zokrates compile -i proof_generation/proof_gen.zok
 # perform the setup phase
 zokrates setup
 
