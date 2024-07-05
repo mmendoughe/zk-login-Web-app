@@ -22,12 +22,6 @@ function HashGenerationForm(props) {
 
     // handle inputs
     const password = stringToBigInts(event.target.proof.value);
-    // const passwordParts = splitTo128BitArrays(password);
-    // console.log("passwordParts:  ", passwordParts);
-    // const fieldChunks = passwordParts.map((chunk) =>
-    //   convertToFieldString(chunk)
-    // );
-    // console.log("fieldChunks:  ", fieldChunks);
     const fieldChunks = [...password];
     if (fieldChunks.length > 4) {
       console.error("Password too long");

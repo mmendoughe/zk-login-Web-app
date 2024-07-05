@@ -26,12 +26,7 @@ function ProofGenerationForm(props) {
 
     // handle inputs
     const password = stringToBigInts(event.target.proof.value);
-    // const passwordParts = splitTo128BitArrays(password);
-    // console.log("passwordParts:  ", passwordParts);
-    // const fieldChunks = passwordParts.map((chunk) =>
-    //   convertToFieldString(chunk)
-    // );
-    // console.log("fieldChunks:  ", fieldChunks);
+
     const fieldChunks = [...password];
     if (fieldChunks.length > 4) {
       setError("Password too long");
