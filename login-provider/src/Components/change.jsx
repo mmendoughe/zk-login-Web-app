@@ -130,7 +130,7 @@ function Change(props) {
         </form>
         {error && <p className="error-message">{error}</p>}
         <div className="buttons">
-          <button className="create-btn" onClick={() => props.back()}>
+          <button className="create-btn" onClick={() => props.submit()}>
             Back to login
           </button>
           <button className="submit-btn" onClick={handleButtonClick}>

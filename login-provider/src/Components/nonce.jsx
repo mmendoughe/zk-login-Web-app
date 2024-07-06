@@ -34,7 +34,9 @@ function Nonce(props) {
       props.submit(tx);
     }
     if (tx === false) {
-      setError("Sorry, the proof is invalid. Make sure you have the correct proof.");
+      setError(
+        "Sorry, the proof is invalid. Make sure you have the correct proof."
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx]);
@@ -44,13 +46,17 @@ function Nonce(props) {
     console.log("Nonce:", nonce.toString());
     console.log("Input:", input);
 
-    const result = await verifyProof(input, props.nameNum, stringToBigInts(nonce.toString()), provider);
+    const result = await verifyProof(
+      input,
+      props.nameNum,
+      stringToBigInts(nonce.toString()),
+      provider
+    );
     console.log("Result:", result);
     if (result.tx == null) {
       console.log("Error:", result.message, result.tx);
       setError(result.message);
-    }
-    else {
+    } else {
       console.log("setting TX:", result.tx);
       setTx(result.tx);
     }
@@ -104,17 +110,20 @@ function Nonce(props) {
           here:
         </p>
         <div className="input-container">
-            <label>Proof</label>
-            <input
-              className="proof"
-              placeholder='{"a":[],"b":[],"c":[]}'
-              onChange={handleInputChange}
-              type="text"
-              name="hash"
-            />
-          </div>
+          <label>Proof</label>
+          <input
+            className="proof"
+            placeholder='{"a":[],"b":[],"c":[]}'
+            onChange={handleInputChange}
+            type="text"
+            name="hash"
+          />
+        </div>
         {error && <p className="error-message">{error}</p>}
         <div className="buttons">
+          <button className="create-btn" onClick={() => props.back()}>
+            Back to login
+          </button>
           <button className="onboard-btn" onClick={() => onboard()}>
             Login
           </button>

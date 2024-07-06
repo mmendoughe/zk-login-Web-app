@@ -70,20 +70,33 @@ function App() {
               setInput(input);
               setNonce(nonce);
             }}
+            back={() => {
+              setUserName("");
+              setStep(0);
+            }}
           />
         );
       case 2:
-        return <Success />;
+        return (
+          <Success
+            submit={() => {
+              setUserName("");
+              setInput(null);
+              setNonce(null);
+              setResult(null);
+              setStep(0);
+            }}
+          />
+        );
       case 3:
         return <Create submit={() => setStep(0)} />;
       case 4:
         return (
           <Change
             nameNum={stringToBigInts(userName)}
-            back={() => setStep(0)}
             submit={() => {
               setUserName("");
-              setStep(0)
+              setStep(0);
             }}
           />
         );

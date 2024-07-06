@@ -7,4 +7,4 @@ zokrates compile -i proof_generation/proof_gen.zok
 zokrates setup
 
 # export a solidity verifier
-zokrates export-verifier
+zokrates export-verifier -o ../contracts/contracts/verifier.sol
