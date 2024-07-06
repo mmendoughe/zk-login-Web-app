@@ -4,8 +4,8 @@
   "description": "Zero-Knowledge proof generation tool",
   "main": "webpack.config.js",
   "scripts": {
-    "install": "concurrently \"npm install --prefix ./client\" \"npm install --prefix ./server\" \"npm install --prefix ./login-provider\"",
-    "start": "concurrently \"npm start --prefix ./client\" \"npm start --prefix ./server\" \"npm start --prefix ./login-provider\""
+    "install": "concurrently \"npm install --prefix ./PGT\" \"npm install --prefix ./server\" \"npm install --prefix ./ASP\"",
+    "start": "concurrently \"npm start --prefix ./PGT\" \"npm start --prefix ./server\" \"npm start --prefix ./ASP\""
   },
   "author": "",
   "license": "ISC",
