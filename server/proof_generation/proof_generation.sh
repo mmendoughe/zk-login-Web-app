@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export PATH=$PATH:/home/sophia/.zokrates/bin
-
 Pass1=$1
 Pass2=$2
 Pass3=$3
