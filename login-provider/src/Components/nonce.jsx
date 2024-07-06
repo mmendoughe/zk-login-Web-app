@@ -44,7 +44,7 @@ function Nonce(props) {
     console.log("Nonce:", nonce.toString());
     console.log("Input:", input);
 
-    const result = await verifyProof(input, props.name, props.nameNum, stringToBigInts(nonce.toString()), provider);
+    const result = await verifyProof(input, props.nameNum, stringToBigInts(nonce.toString()), provider);
     console.log("Result:", result);
     if (result.tx == null) {
       console.log("Error:", result.message, result.tx);
@@ -103,16 +103,18 @@ function Nonce(props) {
           Use the zk-login tool to create the proof of the password and input it
           here:
         </p>
-        <input
-          className="proof"
-          placeholder='{"a":[],"b":[],"c":[]}'
-          onChange={handleInputChange}
-        ></input>
+        <div className="input-container">
+            <label>Proof</label>
+            <input
+              className="proof"
+              placeholder='{"a":[],"b":[],"c":[]}'
+              onChange={handleInputChange}
+              type="text"
+              name="hash"
+            />
+          </div>
         {error && <p className="error-message">{error}</p>}
         <div className="buttons">
-          <button className="create-btn" onClick={() => props.change(input, nonce)}>
-            Change Password
-          </button>
           <button className="onboard-btn" onClick={() => onboard()}>
             Login
           </button>

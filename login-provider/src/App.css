@@ -21,8 +21,8 @@
 
 .App-body {
   background-color: #ffffff;
-  height: 40vh;
-  width: 70vw;
+  height: 55vh;
+  width: 75vw;
   min-width: 900px;
   display: flex;
   flex-direction: column;
@@ -79,8 +79,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 auto;
-  align-self: center;
 }
 
 .input-container {
@@ -178,7 +176,7 @@ textarea.proof {
 }
 
 .submit-btn {
-  width: 100px;
+  width: 120px;
   padding: 10px 20px;
   border: none;
   background-color: #4285F4;
@@ -188,6 +186,7 @@ textarea.proof {
   color: white;
   border-radius: 20px;
   align-items: center;
+  margin-right: 20px;
 }
 
 .submit-btn:hover {

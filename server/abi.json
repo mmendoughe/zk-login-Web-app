@@ -1,7 +1,16 @@
 {
   "inputs": [
     {
-      "name": "password",
+      "name": "result",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
+    },
+    {
+      "name": "newresult",
       "public": false,
       "type": "array",
       "components": {
@@ -29,6 +38,15 @@
     },
     {
       "name": "hash",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "newhash",
       "public": true,
       "type": "array",
       "components": {

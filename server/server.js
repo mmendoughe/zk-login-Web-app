@@ -14,9 +14,9 @@ app.use(cors());
 
 // Endpoint to receive parameters and execute the script
 app.post('/run-script', (req, res) => {
-  const { pass1, pass2, pass3, pass4, user1, user2, user3, user4, nonce1, nonce2, nonce3, nonce4, hash1, hash2 } = req.body;
+  const { pass1, pass2, pass3, pass4, newpass1, newpass2, newpass3, newpass4, user1, user2, user3, user4, nonce1, nonce2, nonce3, nonce4, hash1, hash2, newhash1, newhash2 } = req.body;
   exec(
-    `./proof_generation/proof_generation.sh "${pass1}" "${pass2}" "${pass3}" "${pass4}" "${user1}" "${user2}" "${user3}" "${user4}" "${nonce1}" "${nonce2}" "${nonce3}" "${nonce4}" "${hash1}" "${hash2}"`,
+    `./proof_generation/proof_generation.sh "${pass1}" "${pass2}" "${pass3}" "${pass4}" "${newpass1}" "${newpass2}" "${newpass3}" "${pass4}" "${user1}" "${user2}" "${user3}" "${user4}" "${nonce1}" "${nonce2}" "${nonce3}" "${nonce4}" "${hash1}" "${hash2}" "${newhash1}" "${newhash2}"`,
     async (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);

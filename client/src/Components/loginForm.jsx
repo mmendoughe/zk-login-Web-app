@@ -3,21 +3,27 @@ import React, { useState, useEffect } from "react";
 import { stringToBigInts } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
 
-function ProofGenerationForm(props) {
+function LoginForm(props) {
   const [proof, setProof] = useState(null);
   const [hashes, setHashes] = useState(null);
-  const [formData, setFormData] = useState(null);
-  const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (proof && hashes && formData) {
-      console.log("Submitting Data");
-      props.submit(proof.proof, hashes, formData.nonce, formData.id, username);
-      setLoading(false);
+    if (props.register) {
+      if (proof && hashes) {
+        console.log("Submitting Proof & hashes");
+        props.submit(proof.proof, hashes);
+        setLoading(false);
+      }
+    } else {
+      if (proof) {
+        console.log("Submitting Proof");
+        props.submit(proof.proof);
+        setLoading(false);
+      }
     }
-  }, [proof, hashes, formData, props, username]);
+  }, [proof, props, hashes]);
 
   const handleSubmit = async (event) => {
     setError(null);
@@ -72,7 +78,9 @@ function ProofGenerationForm(props) {
     console.log("nonceArgs Args: ", nonceArgs);
 
     try {
-      const { outputHashString } = await makeProof(passwordArgs);
+      const outputHashStrings = await makeProof([passwordArgs]);
+      const outputHashString = outputHashStrings.hashes[0];
+      setHashes(outputHashString)
       const outputHash = JSON.parse(outputHashString);
       console.log("Output:", outputHash);
 
@@ -87,21 +95,25 @@ function ProofGenerationForm(props) {
         return;
       }
       console.log("Hash zok: ", args[4], args[5]);
-      setUsername(event.target.id.value);
-
-      setHashes(args.slice(4, 6));
 
       const pass = args.slice(0, 4);
       for (let i = 0; i < 4; i++) {
-        pass[i] = BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]);
+        pass[i] =
+          BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]);
         pass[i] = pass[i].toString();
       }
       console.log("Pass: ", pass);
+      // newpass is set to 0 as it is not required for proof generation
+      // newhash is set to the hash of 0
       const formData = {
         pass1: pass[0],
         pass2: pass[1],
         pass3: pass[2],
         pass4: pass[3],
+        newpass1: "0",
+        newpass2: "0",
+        newpass3: "0",
+        newpass4: "0",
         user1: userNameArgs[0],
         user2: userNameArgs[1],
         user3: userNameArgs[2],
@@ -112,8 +124,9 @@ function ProofGenerationForm(props) {
         nonce4: nonceArgs[3],
         hash1: args[4],
         hash2: args[5],
+        newhash1: "326522724692461750427768532537390503835",
+        newhash2: "89059515727727869117346995944635890507",
       };
-      setFormData(formData);
 
       const response = await fetch("/run-script", {
         method: "POST",
@@ -195,4 +208,4 @@ function ProofGenerationForm(props) {
   );
 }
 
-export default ProofGenerationForm;
+export default LoginForm;

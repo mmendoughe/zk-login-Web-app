@@ -10,7 +10,7 @@ class Result {
 }
 
 // Verify the proof of the user.
-async function verifyProof(input, name, nameNum, nonce, provider) {
+async function verifyProof(input, nameNum, nonce, provider) {
   if (provider == null) {
     console.error("Provider not set");
   }
@@ -61,7 +61,7 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
     Y: String(proof.c[1]),
   };
   try {
-    const args = [name, nameNum, nonce, { a, b, c }];
+    const args = [nameNum, nonce, { a, b, c }];
     console.log("Args: ", args);
     const tx = await verifier.verifyProof(...args, {
       from: address,
@@ -79,7 +79,7 @@ async function verifyProof(input, name, nameNum, nonce, provider) {
 }
 
 // Change the password of the user.
-async function changePassword(input, hashes, name, nameNum, nonce, provider) {
+async function changePassword(input, hashes, nameNum, nonce, provider) {
   if (provider == null) {
     console.error("Provider not set");
   }
@@ -96,6 +96,7 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
   // Convert the hash to the correct format.
   try {
     outputHash = JSON.parse(hashes);
+    console.log("Output Hash:", outputHash);
   } catch (error) {
     console.log("Error parsing hash:", error);
     return new Result(
@@ -157,7 +158,6 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
   };
   try {
     const args = [
-      name,
       nameNum,
       nonce,
       { a, b, c },
@@ -193,7 +193,7 @@ async function changePassword(input, hashes, name, nameNum, nonce, provider) {
 }
 
 // Add a new user to the contract.
-async function addUser(userName, hashes, provider) {
+async function addUser(userNameNum, input, nonce, hashes, provider) {
   if (provider == null) {
     console.error("Provider not set");
   }
@@ -204,6 +204,7 @@ async function addUser(userName, hashes, provider) {
   const verifier = new ethers.Contract(cAddr, cABI, signer);
   console.log("Adding User");
 
+  let proof;
   let outputHash = null;
 
   // Convert the hash to the correct format.
@@ -222,8 +223,46 @@ async function addUser(userName, hashes, provider) {
     return new Result(null, "Hash has invalid format. Make sure to copy the hash correctly.");
   }
 
+  // Convert the proof to the correct format.
   try {
-    const userArgs = [userName, outputHash[0], outputHash[1]];
+    proof = JSON.parse(input);
+  } catch {
+    return new Result(
+      null,
+      "Invalid format of proof. Make sure to copy the complete proof"
+    );
+  }
+
+  console.log("Proof: ", proof);
+  if (proof.a.length !== 2 || proof.b.length !== 2 || proof.c.length !== 2) {
+    console.log("Invalid proof");
+    return new Result(
+      null,
+      "Invalid format of proof. Make sure to copy the complete proof"
+    );
+  }
+  let bx = new Array(2);
+  bx[0] = String(proof.b[0][0]);
+  bx[1] = String(proof.b[0][1]);
+
+  let by = new Array(2);
+  by[0] = String(proof.b[1][0]);
+  by[1] = String(proof.b[1][1]);
+  const a = {
+    X: String(proof.a[0]),
+    Y: String(proof.a[1]),
+  };
+  const b = {
+    X: bx,
+    Y: by,
+  };
+  const c = {
+    X: String(proof.c[0]),
+    Y: String(proof.c[1]),
+  };
+
+  try {
+    const userArgs = [userNameNum, nonce, {a, b, c}, outputHash[0], outputHash[1]];
     console.log("User Args:", userArgs);
     const tx = await verifier.addUser(...userArgs, {
       from: provider.getAddress(),

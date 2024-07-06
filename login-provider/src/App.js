@@ -15,9 +15,12 @@ function App() {
   const [result, setResult] = useState(null);
   const [input, setInput] = useState(null);
   const [nonce, setNonce] = useState(null);
+  const [change, setChange] = useState(false);
 
   useEffect(() => {
-    if (userName) {
+    if (userName && change === true) {
+      setStep(4);
+    } else if (userName) {
       setStep(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,6 +49,11 @@ function App() {
         return (
           <Form
             submit={(userName) => {
+              setChange(false);
+              setUserName(userName);
+            }}
+            changePassword={(userName) => {
+              setChange(true);
               setUserName(userName);
             }}
             create={() => setStep(3)}
@@ -54,7 +62,6 @@ function App() {
       case 1:
         return (
           <Nonce
-            name={userName}
             nameNum={stringToBigInts(userName)}
             submit={(result) => {
               setResult(result);
@@ -72,12 +79,12 @@ function App() {
       case 4:
         return (
           <Change
-            name={userName}
             nameNum={stringToBigInts(userName)}
-            input={input}
-            nonce={stringToBigInts(nonce.toString())}
             back={() => setStep(0)}
-            submit={() => setStep(0)}
+            submit={() => {
+              setUserName("");
+              setStep(0)
+            }}
           />
         );
       default:

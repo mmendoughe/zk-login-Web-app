@@ -11,6 +11,15 @@ function stringToBigInts(str) {
   return encode(chunks.map(encodeChunk));
 }
 
+function encode(chunks) {
+  if (chunks.length < 4) {
+    while (chunks.length < 4) {
+      chunks.push("0");
+    }
+  }
+  return chunks;
+}
+
 function encodeChunk(chunk) {
   let asciiString = Array.from(chunk)
     .map((char) => {

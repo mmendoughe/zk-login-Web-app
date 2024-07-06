@@ -1,11 +1,12 @@
 import React from "react";
 import "./App.css";
-import ProcessSelection from "./Components/processSelection";
-import GenerationProcess from "./Components/generation";
-import HashProcess from "./Components/hash";
+import ProcessSelection from "./Components/selectionForm";
+import LoginProcess from "./Components/login-process";
+import ChangePasswordProcess from "./Components/changePassword-process";
 
 function App() {
   const [step, setStep] = React.useState(0);
+  const [register, setRegister] = React.useState(false);
 
   const getStep = () => {
     switch (step) {
@@ -13,23 +14,26 @@ function App() {
         return (
           <ProcessSelection
             select={(select) => {
-              if (select === "proof") {
+              if (select === "login") {
                 setStep(2);
-              } else {
+              } else if (select === "register") {
+                setRegister(true);
+                setStep(2);
+              } else if (select === "passwordChange") {
                 setStep(1);
               }
             }}
           />
         );
       case 1:
-        return <HashProcess />;
+        return <ChangePasswordProcess />;
       case 2:
-        return <GenerationProcess />;
+        return <LoginProcess register={register} />;
       default:
         return (
           <ProcessSelection
             select={(select) => {
-              if (select === "proof") {
+              if (select === "registerLogin") {
                 setStep(2);
               } else {
                 setStep(1);

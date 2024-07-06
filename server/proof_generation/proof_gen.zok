@@ -10,13 +10,21 @@ def xor_u8_arrays(u64[4] a, u64[4] b, u64[4] c) -> u64[4] {
     return result;
 }
 
-def main(private u64[4] password, public u64[4] username, public u64[4] nonce, public field[2] hash) {
-    u64[4] result = xor_u8_arrays(password, username, nonce);
-    field pass1 = u64_to_field(result[0]);
-    field pass2 = u64_to_field(result[1]);
-    field pass3 = u64_to_field(result[2]);
-    field pass4 = u64_to_field(result[3]);
+def main(private u64[4] result, private u64[4] newresult, public u64[4] username, public u64[4] nonce, public field[2] hash, public field[2] newhash) {
+    u64[4] password = xor_u8_arrays(result, username, nonce);
+    field pass1 = u64_to_field(password[0]);
+    field pass2 = u64_to_field(password[1]);
+    field pass3 = u64_to_field(password[2]);
+    field pass4 = u64_to_field(password[3]);
     field[2] h = sha256packed([pass1, pass2, pass3, pass4]);
     assert(h[0] == hash[0]);
     assert(h[1] == hash[1]);
+    // If we want to change the password we also need to check if the hash is correct.
+    field newpass1 = u64_to_field(newresult[0]);
+    field newpass2 = u64_to_field(newresult[1]);
+    field newpass3 = u64_to_field(newresult[2]);
+    field newpass4 = u64_to_field(newresult[3]);
+    field[2] newh = sha256packed([newpass1, newpass2, newpass3, newpass4]);
+    assert(newh[0] == newhash[0]);
+    assert(newh[1] == newhash[1]);
 }

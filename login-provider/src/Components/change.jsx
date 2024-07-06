@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
 import logo from "../google_logo.svg";
 import { onboardMM } from "../client/web3";
+import { Buffer } from "buffer";
 import { Web3Provider } from "../client/provider";
 import { changePassword } from "./helper/contract-interaction";
+import { BiCopy } from "react-icons/bi";
+import { stringToBigInts } from "./helper/handle-password";
+const BN = require("bn.js");
 
 function Change(props) {
   const [hash, setHash] = useState("");
+  const [proof, setProof] = useState("");
   const [provider, setProvider] = useState(null);
   const [error, setError] = useState(null);
   const [tx, setTx] = useState(null);
+  const [nonce] = useState(() => {
+    const array = new Uint8Array(5);
+    window.crypto.getRandomValues(array);
+    const randomBytesBuffer = Buffer.from(array);
+    return new BN(randomBytesBuffer);
+  });
 
   useEffect(() => {
-    if (hash !== "") {
+    if (hash !== "" && proof !== "") {
       onboard();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash]);
+  }, [hash, proof]);
 
   useEffect(() => {
     if (provider) {
@@ -29,7 +40,7 @@ function Change(props) {
       console.log("TX:", tx);
       props.submit();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx]);
 
   const handleButtonClick = () => {
@@ -44,13 +55,33 @@ function Change(props) {
   };
 
   const ChangePassword = async () => {
-    const result = await changePassword(props.input, hash, props.name, props.nameNum, props.nonce, provider);
+    const result = await changePassword(
+      proof,
+      hash,
+      props.nameNum,
+      stringToBigInts(nonce.toString()),
+      provider
+    );
     if (result.tx == null) {
       setError(result.message);
-    }
-    else {
+    } else {
       setTx(result.tx);
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(nonce.toString()).then(
+      () => {
+        console.log("Content copied to clipboard");
+      },
+      () => {
+        console.log("Failed to copy");
+      }
+    );
+  };
+
+  const handleInputChange = (event) => {
+    setProof(event.target.value);
   };
 
   return (
@@ -63,14 +94,38 @@ function Change(props) {
         <h3>Change Password</h3>
       </div>
       <div className="SidesL">
+        <h3>Please copy the Nonce: </h3>
+        <div className="nonce-display">
+          <p>{nonce.toString()}</p>
+          <div
+            className="copy-button"
+            id="copyButton"
+            onClick={() => copyToClipboard()}
+          >
+            <BiCopy size={20} />
+          </div>
+        </div>
         <p className="text">
-          Please generate the hashes of your new password using the Proof-Generation
-          tool.
+          Use the zk-login tool to create the proof and hash of the password and
+          input it here:
         </p>
         <form className="form-container">
           <div className="input-container">
+            <label>Proof</label>
+            <input
+              className="proof"
+              placeholder='{"a":[],"b":[],"c":[]}'
+              onChange={handleInputChange}
+              type="text"
+              name="proof"
+            />
+          </div>
+        </form>
+        <br />
+        <form className="form-container">
+          <div className="input-container">
             <label>Hashed Password</label>
-            <input type="text" name="hash" />
+            <input placeholder='[]' type="text" name="hash" />
           </div>
         </form>
         {error && <p className="error-message">{error}</p>}

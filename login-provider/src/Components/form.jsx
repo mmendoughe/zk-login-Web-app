@@ -18,6 +18,11 @@ function Form(props) {
     setUserName(usernameInput.value);
   };
 
+  const handleChangePasswordClick = () => {
+    const usernameInput = document.querySelector('input[name="username"]');
+    props.changePassword(usernameInput.value);
+  };
+
   return (
     <div className="rows">
       <div className="SidesL">
@@ -37,6 +42,9 @@ function Form(props) {
         <div className="buttons">
           <button className="create-btn" onClick={() => props.create()}>
             Create Account
+          </button>
+          <button className="submit-btn" onClick={handleChangePasswordClick}>
+            Change Password
           </button>
           <button className="submit-btn" onClick={handleButtonClick}>
             Submit
