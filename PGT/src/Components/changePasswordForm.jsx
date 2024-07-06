@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
-import { stringToBigInts } from "./helper/handle-password";
+import { stringToBigInts, encodeAddressToBigInts } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
+import { onboardMM } from "../client/web3";
 
 function ChangePasswordForm(props) {
   const [proof, setProof] = useState(null);
@@ -22,7 +23,18 @@ function ChangePasswordForm(props) {
     event.preventDefault();
     setLoading(true);
 
-    // handle inputs
+    let account;
+    try {
+      const onboard = await onboardMM([31337]);
+      account = onboard.account;
+      console.log("Account:", account);
+    } catch (error) {
+      console.error("Error onboarding MetaMask:", error);
+      setLoading(false); // Reset loading state if there's an error
+      return;
+    }
+
+    // encode password
     const password = stringToBigInts(event.target.proof.value);
 
     const fieldChunks = [...password];
@@ -39,6 +51,7 @@ function ChangePasswordForm(props) {
     }
     console.log("Password Args: ", passwordArgs);
 
+    // encode new password
     const newpassword = stringToBigInts(event.target.newproof.value);
 
     const newfieldChunks = [...newpassword];
@@ -55,6 +68,7 @@ function ChangePasswordForm(props) {
     }
     console.log("new Password Args: ", newpasswordArgs);
 
+    // encode username
     const userName = stringToBigInts(event.target.id.value);
     const nameChunks = [...userName];
     if (nameChunks.length > 4) {
@@ -70,6 +84,7 @@ function ChangePasswordForm(props) {
     }
     console.log("userName Args: ", userNameArgs);
 
+    // encode nonce
     const nonce = stringToBigInts(event.target.nonce.value);
     const nonceChunks = [...nonce];
     if (nonceChunks.length > 4) {
@@ -84,6 +99,10 @@ function ChangePasswordForm(props) {
       nonceArgs.push(zeroBytes);
     }
     console.log("nonceArgs Args: ", nonceArgs);
+
+    // encode address
+    const addressArgs = encodeAddressToBigInts(account);
+    console.log("Address Args: ", addressArgs);
 
     try {
       // Compute Hash of old password
@@ -103,24 +122,18 @@ function ChangePasswordForm(props) {
         args.push(outputHash[1]);
       }
 
-      const newargs = [...newpasswordArgs];
-      if (newoutputHash) {
-        newargs.push(newoutputHash[0]);
-        newargs.push(newoutputHash[1]);
-      }
 
-      if (args.length !== 6 || newargs.length !== 6) {
+      if (args.length !== 6) {
         console.error("Invalid proof arguments");
         setLoading(false);
         return;
       }
       console.log("Hash zok: ", args[4], args[5]);
-      console.log("new Hash zok: ", newargs[4], newargs[5]);
       setNewHashes(newoutputHashString);
 
       const pass = args.slice(0, 4);
       for (let i = 0; i < 4; i++) {
-        pass[i] = BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]);
+        pass[i] = BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]) ^ BigInt(addressArgs[i]);
         pass[i] = pass[i].toString();
       }
       console.log("Pass: ", pass);
@@ -129,10 +142,6 @@ function ChangePasswordForm(props) {
         pass2: pass[1],
         pass3: pass[2],
         pass4: pass[3],
-        newpass1: newargs[0],
-        newpass2: newargs[1],
-        newpass3: newargs[2],
-        newpass4: newargs[3],
         user1: userNameArgs[0],
         user2: userNameArgs[1],
         user3: userNameArgs[2],
@@ -143,8 +152,10 @@ function ChangePasswordForm(props) {
         nonce4: nonceArgs[3],
         hash1: args[4],
         hash2: args[5],
-        newhash1: newargs[4],
-        newhash2: newargs[5],
+        address1: addressArgs[0],
+        address2: addressArgs[1],
+        address3: addressArgs[2],
+        address4: addressArgs[3],
       };
 
       const response = await fetch("/run-script", {

@@ -40,6 +40,8 @@ Chain ID: 31337
 
 ## Run project
 
+navigate back to the root of the project.
+
 In the project directory, you can run:
 ### `npm install`
 

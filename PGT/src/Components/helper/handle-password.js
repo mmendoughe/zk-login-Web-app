@@ -21,8 +21,6 @@ function encodeChunk(chunk) {
   return BigInt(asciiString).toString();
 }
 
-
-
 function convertToFieldString(byteArray) {
   let fieldString = "";
   for (let i = 0; i < byteArray.length; i++) {
@@ -31,7 +29,21 @@ function convertToFieldString(byteArray) {
   return fieldString;
 }
 
+function encodeAddressToBigInts(address) {
+  if (address.startsWith("0x")) {
+    address = address.slice(2);
+  }
+  
+  const chunks = [];
+  for (let i = 0; i < address.length; i += 10) { // 10 hex chars fit into a 40-bit chunk
+    chunks.push(address.slice(i, i + 10));
+  }
+  
+  return chunks.map(chunk => BigInt("0x" + chunk).toString());
+}
+
 export {
   convertToFieldString,
   stringToBigInts,
+  encodeAddressToBigInts,
 };

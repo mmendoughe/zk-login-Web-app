@@ -194,13 +194,28 @@ struct Proof {
 interface VerifierContract {
     function verifyTx(
         Proof memory proof,
-        uint[12] memory input
+        uint[14] memory input
     ) external view returns (bool);
 }
 
 function arrayToKey(uint256[4] memory array) pure returns (bytes32) {
     return keccak256(abi.encodePacked(array));
 }
+
+function encodeAddressToUint64Array(address addr) pure returns (uint64[4] memory) {
+        bytes20 addrBytes = bytes20(addr);
+        uint64[4] memory result;
+        
+        for (uint i = 0; i < 4; i++) {
+            uint64 part = 0;
+            for (uint j = 0; j < 5; j++) {
+                part = part * 256 + uint8(addrBytes[i * 5 + j]);
+            }
+            result[i] = part;
+        }
+        
+        return result;
+    }
 
 // Mapping contract holds the user data and verifies the proof.
 contract MappingContract {
@@ -233,7 +248,7 @@ contract MappingContract {
             "User already exists"
         );
         VerifierContract verifier = VerifierContract(verifierContractAddress);
-
+        uint64[4] memory addr = encodeAddressToUint64Array(msg.sender);
         require(
             verifier.verifyTx(
                 proof,
@@ -248,8 +263,11 @@ contract MappingContract {
                     nonce[3],
                     hash1,
                     hash2,
-                    uint256(326522724692461750427768532537390503835),
-                    uint256(89059515727727869117346995944635890507)
+                    addr[0],
+                    addr[1],
+                    addr[2],
+                    addr[3]
+
                 ]
             ),
             "Proof verification failed"
@@ -271,6 +289,7 @@ contract MappingContract {
             "User does not exist"
         );
 
+        uint64[4] memory addr = encodeAddressToUint64Array(msg.sender);
         VerifierContract verifier = VerifierContract(verifierContractAddress);
         return
             verifier.verifyTx(
@@ -286,8 +305,10 @@ contract MappingContract {
                     nonce[3],
                     users[userKey].hash1,
                     users[userKey].hash2,
-                    uint256(326522724692461750427768532537390503835),
-                    uint256(89059515727727869117346995944635890507)
+                    addr[0],
+                    addr[1],
+                    addr[2],
+                    addr[3]
                 ]
             );
     }
@@ -306,6 +327,7 @@ contract MappingContract {
             !(users[userKey].hash1 == 0 && users[userKey].hash2 == 0),
             "User does not exist"
         );
+        uint64[4] memory addr = encodeAddressToUint64Array(msg.sender);
         VerifierContract verifier = VerifierContract(verifierContractAddress);
         require(
             verifier.verifyTx(
@@ -321,8 +343,10 @@ contract MappingContract {
                     nonce[3],
                     users[userKey].hash1,
                     users[userKey].hash2,
-                    hash1,
-                    hash2
+                    addr[0],
+                    addr[1],
+                    addr[2],
+                    addr[3]
                 ]
             ),
             "Proof verification failed"

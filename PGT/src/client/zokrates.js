@@ -14,7 +14,7 @@ async function makeProof(passwords) {
     }`;
 
   const artifactsHash = zokratesProvider.compile(sourceHash);
-  console.log("Compiled Hashes");
+
   let hashes = [];
 
   for (let j = 0; j < passwords.length; j++) {
@@ -23,13 +23,11 @@ async function makeProof(passwords) {
     for (let i = 0; i < password.length; i++) {
       argsHash.push(convertToFieldString(password[i]));
     }
-    console.log("Args:", argsHash);
     const outputHashString = zokratesProvider.computeWitness(
       artifactsHash,
       argsHash
     ).output;
     hashes.push(outputHashString);
-    console.log("Output Hash String:", hashes);
   }
 
   return { hashes };

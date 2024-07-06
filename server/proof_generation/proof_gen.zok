@@ -2,16 +2,16 @@ import "utils/casts/u64_to_field.zok";
 import "hashes/sha256/512bitPacked" as sha256packed;
 
 // XOR three arrays of u64 elements
-def xor_u8_arrays(u64[4] a, u64[4] b, u64[4] c) -> u64[4] {
+def xor_u8_arrays(u64[4] a, u64[4] b, u64[4] c, u64[4] d) -> u64[4] {
     u64[4] mut result = [0; 4];
     for u32 i in 0..4 {
-        result[i] = a[i] ^ b[i] ^ c[i];
+        result[i] = a[i] ^ b[i] ^ c[i] ^ d[i];
     }
     return result;
 }
 
-def main(private u64[4] result, private u64[4] newresult, public u64[4] username, public u64[4] nonce, public field[2] hash, public field[2] newhash) {
-    u64[4] password = xor_u8_arrays(result, username, nonce);
+def main(private u64[4] result, public u64[4] username, public u64[4] nonce, public field[2] hash, public u64[4] address) {
+    u64[4] password = xor_u8_arrays(result, username, nonce, address);
     field pass1 = u64_to_field(password[0]);
     field pass2 = u64_to_field(password[1]);
     field pass3 = u64_to_field(password[2]);
@@ -19,12 +19,4 @@ def main(private u64[4] result, private u64[4] newresult, public u64[4] username
     field[2] h = sha256packed([pass1, pass2, pass3, pass4]);
     assert(h[0] == hash[0]);
     assert(h[1] == hash[1]);
-    // If we want to change the password we also need to check if the hash is correct.
-    field newpass1 = u64_to_field(newresult[0]);
-    field newpass2 = u64_to_field(newresult[1]);
-    field newpass3 = u64_to_field(newresult[2]);
-    field newpass4 = u64_to_field(newresult[3]);
-    field[2] newh = sha256packed([newpass1, newpass2, newpass3, newpass4]);
-    assert(newh[0] == newhash[0]);
-    assert(newh[1] == newhash[1]);
 }

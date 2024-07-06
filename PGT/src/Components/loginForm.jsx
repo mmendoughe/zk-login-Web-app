@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 import React, { useState, useEffect } from "react";
-import { stringToBigInts } from "./helper/handle-password";
+import { stringToBigInts, encodeAddressToBigInts } from "./helper/handle-password";
 import { makeProof } from "../client/zokrates";
+import { onboardMM } from "../client/web3";
 
 function LoginForm(props) {
   const [proof, setProof] = useState(null);
@@ -30,7 +31,18 @@ function LoginForm(props) {
     event.preventDefault();
     setLoading(true);
 
-    // handle inputs
+    let account;
+    try {
+      const onboard = await onboardMM([31337]);
+      account = onboard.account;
+      console.log("Account:", account);
+    } catch (error) {
+      console.error("Error onboarding MetaMask:", error);
+      setLoading(false); // Reset loading state if there's an error
+      return;
+    }
+
+    // encode password
     const password = stringToBigInts(event.target.proof.value);
 
     const fieldChunks = [...password];
@@ -47,6 +59,7 @@ function LoginForm(props) {
     }
     console.log("Password Args: ", passwordArgs);
 
+    // encode username
     const userName = stringToBigInts(event.target.id.value);
     const nameChunks = [...userName];
     if (nameChunks.length > 4) {
@@ -62,6 +75,7 @@ function LoginForm(props) {
     }
     console.log("userName Args: ", userNameArgs);
 
+    // encode nonce
     const nonce = stringToBigInts(event.target.nonce.value);
     const nonceChunks = [...nonce];
     if (nonceChunks.length > 4) {
@@ -76,6 +90,10 @@ function LoginForm(props) {
       nonceArgs.push(zeroBytes);
     }
     console.log("nonceArgs Args: ", nonceArgs);
+
+    // encode address
+    const addressArgs = encodeAddressToBigInts(account);
+    console.log("Address Args: ", addressArgs);
 
     try {
       const outputHashStrings = await makeProof([passwordArgs]);
@@ -99,7 +117,7 @@ function LoginForm(props) {
       const pass = args.slice(0, 4);
       for (let i = 0; i < 4; i++) {
         pass[i] =
-          BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]);
+          BigInt(pass[i]) ^ BigInt(nonceArgs[i]) ^ BigInt(userNameArgs[i]) ^ BigInt(addressArgs[i]);
         pass[i] = pass[i].toString();
       }
       console.log("Pass: ", pass);
@@ -110,10 +128,6 @@ function LoginForm(props) {
         pass2: pass[1],
         pass3: pass[2],
         pass4: pass[3],
-        newpass1: "0",
-        newpass2: "0",
-        newpass3: "0",
-        newpass4: "0",
         user1: userNameArgs[0],
         user2: userNameArgs[1],
         user3: userNameArgs[2],
@@ -124,8 +138,10 @@ function LoginForm(props) {
         nonce4: nonceArgs[3],
         hash1: args[4],
         hash2: args[5],
-        newhash1: "326522724692461750427768532537390503835",
-        newhash2: "89059515727727869117346995944635890507",
+        address1: addressArgs[0],
+        address2: addressArgs[1],
+        address3: addressArgs[2],
+        address4: addressArgs[3],
       };
 
       const response = await fetch("/run-script", {
