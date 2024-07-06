@@ -4,13 +4,14 @@
   "description": "Zero-Knowledge proof generation tool",
   "main": "webpack.config.js",
   "scripts": {
-    "install": "concurrently \"npm install --prefix ./PGT\" \"npm install --prefix ./server\" \"npm install --prefix ./ASP\"",
-    "start": "concurrently \"npm start --prefix ./PGT\" \"npm start --prefix ./server\" \"npm start --prefix ./ASP\""
+    "install": "concurrently \"npm install --prefix ./PGT-Frontend\" \"npm install --prefix ./PGT-Backend\" \"npm install --prefix ./Service-Provider\" \"npm install --prefix ./Contracts\"",
+    "start": "concurrently \"npm start --prefix ./PGT-Frontend\" \"npm start --prefix ./PGT-Backend\" \"npm start --prefix ./Service-Provider\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "product-sans-webfont": "^1.0.0"
   },
   "devDependencies": {
     "hardhat": "^2.22.6"

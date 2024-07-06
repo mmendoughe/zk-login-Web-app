@@ -10,10 +10,17 @@ Follow the [instructions](https://zokrates.github.io/gettingstarted.html) to ins
 
 #### Setup via setup.sh
 
-If you are working with Linux, you can run `./setup.sh` to compile zokrates, deploy the contracts and start the project.
+If you are working with Linux or macOS, you can run 
+`chmod +x setup.sh` and
+`./setup.sh`
+to compile zokrates, deploy the contracts and start the project,
+then skip to section Hardhat on Metamask.
 
 #### Manual Setup
-Run `./server/dev.sh` to generate the verifier.sol file.
+Run
+`chmod +x /server/dev.sh`
+`./server/dev.sh`
+to generate the verifier.sol file.
 
 Navigate to the contracts directory:
 `cd contracts`

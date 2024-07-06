@@ -39,9 +39,9 @@ detect_os
 
 echo "Setting up zk-login project..."
 
-# Navigate to the server directory and run the initial Zokrates setup
+# Navigate to the PGT-Frontend-Backend directory and run the initial Zokrates setup
 echo "Navigating to the server directory..."
-cd server
+cd PGT-Backend
 
 echo "Running the Zokrates setup..."
 # Compile the Zokrates proof generation file
@@ -51,13 +51,13 @@ zokrates compile -i proof_generation/proof_gen.zok
 zokrates setup
 
 # Export a Solidity verifier
-zokrates export-verifier -o ../contracts/contracts/verifier.sol
-
-# Navigate to the contracts directory
+zokrates export-verifier -o ../Contracts/contracts/verifier.sol
+sleep 4
+# Navigate to the Contracts directory
 echo "Navigating to the contracts directory..."
-cd ../contracts
+cd ../Contracts
 
-# Compile contracts using Hardhat
+# Compile Contracts using Hardhat
 echo "Cleaning and compiling contracts with Hardhat..."
 npx hardhat clean
 npx hardhat compile
@@ -69,7 +69,7 @@ open_new_terminal "cd $(pwd) && npx hardhat node"
 # Give some time for the Hardhat node to start
 sleep 10
 
-# Deploy contracts using Hardhat Ignition
+# Deploy Contracts using Hardhat Ignition
 echo "Deploying contracts with Hardhat Ignition..."
 npx hardhat ignition deploy ./ignition/modules/Verify.js --network localhost
 npx hardhat ignition deploy ./ignition/modules/Mapping.js --network localhost
