@@ -8,10 +8,17 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Follow the [instructions](https://zokrates.github.io/gettingstarted.html) to install zokrates.
 
+#### Setup via setup.sh
+
+If you are working with Linux, you can run `./setup.sh` to compile zokrates, deploy the contracts and start the project.
+
+#### Manual Setup
 Run `./server/dev.sh` to generate the verifier.sol file.
 
 Navigate to the contracts directory:
 `cd contracts`
+
+Follow the other instructions.
 
 ### Compile
 Open repository and run:
@@ -28,7 +35,7 @@ Go back to the previous window and run these commands:
 
 `npx hardhat ignition deploy ./ignition/modules/Mapping.js --network localhost`
 
-### Hardhat on Metamask
+## Hardhat on Metamask
 This should now allow you to make contract calls.
 You can use any of the provided secret keys except the first 2 from the node and import them in MetaMask.
 

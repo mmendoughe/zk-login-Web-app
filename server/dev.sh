@@ -1,10 +1,17 @@
-#navigate to correct folder
+#!/bin/bash
+
+echo "Setting up zk-login project..."
+
+# Navigate to the server directory and run the initial Zokrates setup
+echo "Navigating to the server directory..."
 cd server
 
-# Should be done only once (Trusted Plattform)
+echo "Running the Zokrates setup..."
+# Compile the Zokrates proof generation file
 zokrates compile -i proof_generation/proof_gen.zok
-# perform the setup phase
+
+# Perform the setup phase
 zokrates setup
 
-# export a solidity verifier
+# Export a Solidity verifier
 zokrates export-verifier -o ../contracts/contracts/verifier.sol
