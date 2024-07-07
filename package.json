@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "hardhat": "^2.22.6"
   }
 }
