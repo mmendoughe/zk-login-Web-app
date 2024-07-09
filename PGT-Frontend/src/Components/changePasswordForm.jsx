@@ -4,6 +4,12 @@ import { stringToBigInts, encodeAddressToBigInts } from "./helper/handle-passwor
 import { computeHashes } from "../client/zokrates";
 import { onboardMM } from "../client/web3";
 
+/**
+ * ChangePasswordForm handles user interaction to change the password and calls the script to generate the proof.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function ChangePasswordForm(props) {
   const [proof, setProof] = useState(null);
   const [newhashes, setNewHashes] = useState(null);

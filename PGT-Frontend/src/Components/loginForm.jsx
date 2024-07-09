@@ -4,6 +4,12 @@ import { stringToBigInts, encodeAddressToBigInts } from "./helper/handle-passwor
 import { computeHashes } from "../client/zokrates";
 import { onboardMM } from "../client/web3";
 
+/**
+ * LoginForm handles user interaction to generate the proof and calls the script to generate the proof.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function LoginForm(props) {
   const [proof, setProof] = useState(null);
   const [hashes, setHashes] = useState(null);

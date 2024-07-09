@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import logo from "../google_logo.svg";
 
+/**
+ * Form handles the selection of the wanted user interaction.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Form(props) {
   const [userName, setUserName] = useState("");
 

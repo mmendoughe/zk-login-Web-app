@@ -9,7 +9,13 @@ import { stringToBigInts } from "./helper/handle-password";
 
 const BN = require("bn.js");
 
-function Nonce(props) {
+/**
+ * Nonce handles user interaction to verify the proof and calls verifyProof on the contract using the given inputs of the user.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function VerificationForm(props) {
   const [provider, setProvider] = useState(null);
   const [input, setInput] = useState("");
   const [error, setError] = useState(null);
@@ -133,4 +139,4 @@ function Nonce(props) {
   );
 }
 
-export default Nonce;
+export default VerificationForm;

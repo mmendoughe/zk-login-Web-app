@@ -1,3 +1,9 @@
+/**
+ * ProcessSelection component is used to select the generation tool
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function ProcessSelection(props) {
   return (
     <div>

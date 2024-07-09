@@ -9,6 +9,12 @@ import { stringToBigInts } from "./helper/handle-password";
 
 const BN = require("bn.js");
 
+/**
+ * Create handles user interaction to create a new user and calls addUser on the contract using the given inputs of the user.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Create(props) {
   const [userName, setUserName] = useState("");
   const [hash, setHash] = useState("");

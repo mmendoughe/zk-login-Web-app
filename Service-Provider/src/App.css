@@ -231,10 +231,3 @@ textarea.proof {
   color: red;
   font-weight: bold;
 }
-
-.google-page {
-  background-image: url('google-page.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}

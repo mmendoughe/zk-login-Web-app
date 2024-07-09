@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import Form from "./Components/form";
-import Nonce from "./Components/nonce";
+import VerificationForm from "./Components/verificationForm";
 import Success from "./Components/success";
 import Create from "./Components/create";
 import Change from "./Components/change";
@@ -61,7 +61,7 @@ function App() {
         );
       case 1:
         return (
-          <Nonce
+          <VerificationForm
             nameNum={stringToBigInts(userName)}
             submit={(result) => {
               setResult(result);
@@ -79,6 +79,7 @@ function App() {
       case 2:
         return (
           <Success
+            userName={userName}
             submit={() => {
               setUserName("");
               setInput(null);

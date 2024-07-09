@@ -8,6 +8,12 @@ import { BiCopy } from "react-icons/bi";
 import { stringToBigInts } from "./helper/handle-password";
 const BN = require("bn.js");
 
+/**
+ * Change handles user interaction to change a password and calls changePassword on the contract using the given inputs of the user.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Change(props) {
   const [hash, setHash] = useState("");
   const [proof, setProof] = useState("");

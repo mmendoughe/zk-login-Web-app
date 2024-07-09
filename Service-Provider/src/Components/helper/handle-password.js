@@ -1,5 +1,12 @@
 /* eslint-disable no-undef */
+// Part of the encoding was taken from https://www.claritician.com/how-to-encode-a-string-of-text-into-a-number-and-then-back-in-javascript.
 
+/**
+ * stringToBigInts converts a string to an array of BigInts to use as u64 values in zokrates.
+ * Turns the return array into an array of length 4 by adding 0s to the end.
+ * @param str: string
+ * @returns string[]: String representations of BigInts
+ */
 function stringToBigInts(str) {
   // Split the string into chunks of 5 characters so that the bigInt can be converted to u64
   const asciistring = encodeURIComponent(str);

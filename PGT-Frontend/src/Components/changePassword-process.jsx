@@ -3,6 +3,12 @@ import ChangePasswordForm from "./changePasswordForm";
 import Proof from "./proof";
 
 const Components = ["PROOF-GENERATION", "PUBLISH-PROOF"];
+
+/**
+ * ChangePasswordProcess handles the navigation of the change password process.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function ChangePasswordProcess() {
   const [step, setStep] = useState(0);
   const [proof, setProof] = useState(null);

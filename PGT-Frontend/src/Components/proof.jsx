@@ -1,5 +1,11 @@
 import { BiCopy } from "react-icons/bi";
 
+/**
+ * Proof displays the proof and hash to the user.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Proof(props) {
 
   const copyToClipboard = (val) => {

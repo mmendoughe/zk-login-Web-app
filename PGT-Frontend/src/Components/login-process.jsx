@@ -3,6 +3,12 @@ import LoginForm from "./loginForm";
 import Proof from "./proof";
 
 const Components = ["PROOF-GENERATION", "PUBLISH-PROOF"];
+
+/**
+ * LoginProcess handles the navigation of the login and registration process.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function LoginProcess(props) {
   const [step, setStep] = useState(0);
   const [proof, setProof] = useState(null);
