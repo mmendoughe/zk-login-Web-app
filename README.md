@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Prerequisites
 
+Make sure that these ports on localhost are free to use:
+- 8545
+- 3000
+- 3001
+- 3002
+
 ### Setup zokrates
 
 Follow the [instructions](https://zokrates.github.io/gettingstarted.html) to install zokrates.

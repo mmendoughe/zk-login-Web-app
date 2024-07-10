@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { VerifierMetaData } from "../../lib/abi";
+import deployedAddresses from '../../lib/deployed_addresses.js';
 
 // Return object for the contract interaction functions.
 class Result {
@@ -16,7 +17,8 @@ async function initializeContract(provider) {
   }
   const signer = await provider.getSigner();
   const address = provider.getAddress();
-  const cAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+
+  const cAddr = deployedAddresses["MappingContractModule#MappingContract"];
   const cABI = JSON.parse(VerifierMetaData.ABI);
   const verifier = new ethers.Contract(cAddr, cABI, signer);
   return { verifier, address };

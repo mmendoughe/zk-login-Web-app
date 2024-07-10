@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Define the source and destination paths for the JSON file
+DEPLOYED_ADDRESSES_PATH="./Contracts/ignition/deployments/chain-31337/deployed_addresses.json"
+DESTINATION_PATH="./Service-Provider/src/lib/deployed_addresses.js"
+
 # Install dependencies
 echo "Installing dependencies..."
 npm install
@@ -72,6 +76,10 @@ sleep 10
 # Deploy Contracts using Hardhat Ignition
 echo "Deploying contracts with Hardhat Ignition..."
 npx hardhat ignition deploy ./ignition/modules/Verify.js --network localhost
+
+# Wait until deployment is complete so mapping can use address of verifier contract
+sleep 10
+
 npx hardhat ignition deploy ./ignition/modules/Mapping.js --network localhost
 
 # Print instructions for adding Hardhat network to MetaMask
@@ -84,6 +92,13 @@ echo "You can use any of the provided secret keys except the first 2 from the no
 # Navigate back to the project root directory
 echo "Navigating back to the project root directory..."
 cd ..
+
+echo "Copying deployed_addresses.json to the other project..."
+echo "module.exports = " > $DESTINATION_PATH
+cat $DEPLOYED_ADDRESSES_PATH >> $DESTINATION_PATH
+echo ";" >> $DESTINATION_PATH
+
+sleep 2
 
 # Run the project
 echo "Starting the development server..."
