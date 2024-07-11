@@ -1,0 +1,24 @@
+import "utils/casts/u64_to_field.zok";
+import "hashes/sha256/512bitPacked" as sha256packed;
+
+// XOR four arrays of u64 elements
+def xor_u8_arrays(u64[4] a, u64[4] b, u64[4] c, u64[4] d) -> u64[4] {
+    u64[4] mut result = [0; 4];
+    for u32 i in 0..4 {
+        result[i] = a[i] ^ b[i] ^ c[i] ^ d[i];
+    }
+    return result;
+}
+
+def main(private u64[4] result, public u64[4] username, public u64[4] nonce, public field[2] hash, public u64[4] address) {
+    // Compute the password
+    u64[4] password = xor_u8_arrays(result, username, nonce, address);
+    field pass1 = u64_to_field(password[0]);
+    field pass2 = u64_to_field(password[1]);
+    field pass3 = u64_to_field(password[2]);
+    field pass4 = u64_to_field(password[3]);
+    field[2] h = sha256packed([pass1, pass2, pass3, pass4]);
+    // Check if hashed password equals the hash
+    assert(h[0] == hash[0]);
+    assert(h[1] == hash[1]);
+}

@@ -1,0 +1,55 @@
+{
+  "inputs": [
+    {
+      "name": "result",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
+    },
+    {
+      "name": "username",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
+    },
+    {
+      "name": "nonce",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
+    },
+    {
+      "name": "hash",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "address",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "u64"
+      }
+    }
+  ],
+  "output": {
+    "type": "tuple",
+    "components": {
+      "elements": []
+    }
+  }
+}
